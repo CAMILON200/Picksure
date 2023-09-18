@@ -83,7 +83,7 @@ Route::get('/pautasusers', [PautasUsersController::class, 'index']);
 Route::post('/pautasusers/create', [PautasUsersController::class, 'payPauta']);
 
 //Imagenes Pautadas
-Route::get('/imagepautas/{user_id}/{language}', [ImagePautasController::class, 'index']);
+Route::get('/imagepautas/{user_id}/{pauta_id}/{language}', [ImagePautasController::class, 'index']);
 
 //parameters
 Route::get('/parameters', [ParametersController::class, 'index']);

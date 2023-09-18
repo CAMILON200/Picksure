@@ -45,14 +45,14 @@ class ImagePautasController extends Controller
      *  )
      * )
      */
-  public function index(Request $request, $user_id, $language)
+  public function index(Request $request, $user_id, $pauta_id, $language)
   {  	
     $image = DB::select("SELECT i.id , i.img_url, ti.title , ti.description , ti.`language` 
     FROM images_pautas ip
     LEFT JOIN pautas_users pu ON pu.id = ip.pautasuser_id 
     INNER JOIN imageproducts i ON i.id = ip.imageproducts_id 
     LEFT JOIN texts_imageproducts ti ON ti.imageproduct_id = i.id 
-    WHERE pu.user_id  = $user_id AND ti.language = '$language'", []);
+    WHERE pu.user_id  = $user_id AND pu.id  = $pauta_id AND ti.language = '$language'", []);
     
     $response['status'] = 200;
     $response['data'] = $image; 
