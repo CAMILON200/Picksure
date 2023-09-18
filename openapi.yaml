@@ -1,0 +1,15 @@
+openapi: 3.0.0
+info:
+  title: 'API Laravel Swagger Documentation'
+  contact:
+    email: jhonfersteven@gmail.com
+  version: 1.5.0
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      description: 'Token de acceso obtenido en la autenticación'
+      name: bearerAuth
+      in: header
+      bearerFormat: JWT
+      scheme: Bearer

@@ -1,0 +1,1 @@
+$('.site-footer-right').html('Hecho por <a href="http://ziel.com" target="_blank">ZIEL</a> - v1.1.0')

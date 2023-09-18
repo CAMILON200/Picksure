@@ -1,0 +1,11 @@
+.categories-product {
+    border: 2px solid #f3f7f9;
+    padding: 20px;
+    border-radius: 5px;
+    height: auto !important;
+  }
+  
+  .btn.btn-primary {
+    background: #898A8A;
+  }
+  
