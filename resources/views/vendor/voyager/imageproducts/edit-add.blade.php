@@ -129,7 +129,7 @@
 
 							<p class="small my-2">Arrastre y suelte la(s) imagen(es) de fondo dentro de la región punteada<br><i>ó</i></p>
 
-							<input name="img_url" id="image_product" data-post-name="image_background"  class="position-absolute invisible" type="file" accept="image/jpeg, image/png, image/svg+xml" />
+							<input name="image_product" id="image_product" data-post-name="image_background"  class="position-absolute invisible" type="file" accept="image/jpeg, image/png, image/svg+xml" />
 
 							<label class="btn btn-primary mb-3" for="image_product">Seleccionar archivo(s)</label>
 
