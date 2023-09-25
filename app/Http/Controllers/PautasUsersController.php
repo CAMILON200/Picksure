@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Parameters;
 use App\Models\PaymentHistory;
 use App\Models\PautasUsers;
+use App\Models\CategoriesPauta;
+use App\Models\LocationsPauta;
 use App\Models\Imageproduct;
 use App\Models\ImagesPautas;
 use Illuminate\Http\Request;
@@ -86,6 +88,28 @@ class PautasUsersController extends Controller
         $images_pautas = ImagesPautas::create([
           'imageproducts_id' => $value,
           'pautasuser_id' => $result_id
+        ]);
+      } 	
+      DB::commit();
+    }
+
+    $categories_pauta = $request->categories_pauta;
+    if(count($categories_pauta) > 0){
+      foreach ($categories_pauta as $key => $value) {
+        $categories_pautas = CategoriesPauta::create([
+          'category_id' => $value,
+          'pauta_id' => $result_id
+        ]);
+      } 	
+      DB::commit();
+    }
+    
+    $locations_pauta = $request->locations_pauta;
+    if(count($locations_pauta) > 0){
+      foreach ($locations_pauta as $key => $value) {
+        $locations_pautas = CategoriesPauta::create([
+          'location_prefix' => $value,
+          'pauta_id' => $result_id
         ]);
       } 	
       DB::commit();

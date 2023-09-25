@@ -34,7 +34,7 @@
 @section('content')
     <div class="page-content read container-fluid">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-4">
 
                 <div class="panel panel-bordered" style="padding-bottom:5px;">
                     <!-- form start -->
@@ -126,6 +126,22 @@
                                         {{ __('voyager::generic.download') }}
                                     </a>
                                 @endif
+                            @elseif($row->type == 'number')
+                                @if ($row->field == 'status')
+                                    @if ($dataTypeContent->{$row->field} == 1)
+                                        <span class="badge badge-success">Activo</span>
+                                    @else
+                                        <span class="badge badge-danger">Inactivo</span>
+                                    @endif
+                                @elseif ($row->field == 'is_public')
+                                    @if ($dataTypeContent->{$row->field} == 1)
+                                        <span class="badge badge-success">SI</span>
+                                    @else
+                                        <span class="badge badge-danger">NO</span>
+                                    @endif
+                                @else
+                                    {{ $dataTypeContent->{$row->field} }}
+                                @endif
                             @else
                                 @include('voyager::multilingual.input-hidden-bread-read')
                                 <p>{{ $dataTypeContent->{$row->field} }}</p>
@@ -136,6 +152,48 @@
                         @endif
                     @endforeach
 
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="col-md-12">
+                    <div class="panel panel-bordered" style="padding-bottom:5px;">
+                        <div class="panel-heading" style="border-bottom:0;">
+                            <h3 class="panel-title">Categorias Relacionadas</h3>
+                        </div>
+                        <div class="panel-body" style="padding-top:0;">
+                            @foreach($categories as $key => $value)
+                                <span class="badge badge-primary badge-pill">{{ $value->name }}</span>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="panel panel-bordered" style="padding-bottom:5px;">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="font-size: 18px">Nombre</th>
+                                    <th scope="col" style="font-size: 18px">Descripción</th>
+                                    <th scope="col" style="font-size: 18px">Idioma</th>
+                                </tr>
+                            </thead>
+                            <tbody id="columnItemText">
+                                @foreach($textImages as $key => $value)
+                                    <tr id="item-{{ $value->lang_name }}">												
+                                        <td>
+                                            {{ $value->title }}
+                                        </td>
+                                        <td>
+                                            {{ $value->description }}
+                                        </td>
+                                        <td>
+                                            {{ $value->lang_name }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

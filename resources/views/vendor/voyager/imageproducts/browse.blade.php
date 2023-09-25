@@ -178,7 +178,23 @@
 																				@endif
 																			@elseif($row->type == 'color')
 																				<span class="badge badge-lg" style="background-color: {{ $data->{$row->field} }}">{{ $data->{$row->field} }}</span>
-																			@elseif($row->type == 'text')
+																			@elseif($row->type == 'number')
+                                                                                @if ($row->field == 'status')
+                                                                                    @if ($data->{$row->field} == 1)
+                                                                                        <span class="badge badge-success">Activo</span>
+                                                                                    @else
+                                                                                        <span class="badge badge-danger">Inactivo</span>
+                                                                                    @endif
+                                                                                @elseif ($row->field == 'is_public')
+                                                                                    @if ($data->{$row->field} == 1)
+                                                                                        <span class="badge badge-success">SI</span>
+                                                                                    @else
+                                                                                        <span class="badge badge-danger">NO</span>
+                                                                                    @endif
+                                                                                @else
+                                                                                    {{ $data->{$row->field} }}
+                                                                                @endif
+                                                                            @elseif($row->type == 'text')
 																				@include('voyager::multilingual.input-hidden-bread-browse')
 																				<div>{{ mb_strlen( $data->{$row->field} ) > 200 ? mb_substr($data->{$row->field}, 0, 200) . ' ...' : $data->{$row->field} }}</div>
 																			@elseif($row->type == 'text_area')
@@ -240,7 +256,7 @@
 																				@if (property_exists($row->details, 'show_as_images') && $row->details->show_as_images)
 																					<img src="@if( !filter_var($data->{$row->field}, FILTER_VALIDATE_URL)){{ Voyager::image( $data->{$row->field} ) }}@else{{ $data->{$row->field} }}@endif" style="width:50px">
 																				@else
-																					{{ $data->{$row->field} }}
+                                                                                    {{ $data->{$row->field} }}
 																				@endif
 																			@else
 																				{{ trans_choice('voyager::media.files', 0) }}

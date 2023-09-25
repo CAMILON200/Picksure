@@ -258,6 +258,16 @@ class CategoryController extends \TCG\Voyager\Http\Controllers\VoyagerBaseContro
         // Check if BREAD is Translatable
         $isModelTranslatable = is_bread_translatable($dataTypeContent);
 
+        $textCategories = DB::table('texts_categories')
+        ->join('languages', 'languages.prefijo', '=', 'texts_categories.language')
+        ->select(
+          'texts_categories.name', 
+          'texts_categories.language',
+          'languages.name as lang_name'
+        )
+        ->where('texts_categories.category_id', '=', $id)
+        ->get();
+
         // Eagerload Relations
         $this->eagerLoadRelations($dataTypeContent, $dataType, 'read', $isModelTranslatable);
 
@@ -267,7 +277,7 @@ class CategoryController extends \TCG\Voyager\Http\Controllers\VoyagerBaseContro
             $view = "voyager::$slug.read";
         }
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'isSoftDeleted'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'isSoftDeleted', 'textCategories'));
     }
 
     //***************************************

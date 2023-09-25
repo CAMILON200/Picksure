@@ -254,6 +254,23 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 			// Replace relationships' keys for labels and create READ links if a slug is provided.
 			$dataTypeContent = $this->resolveRelations($dataTypeContent, $dataType, true);
 
+			$categories = DB::table('imageproducts_category')
+			->join('categories', 'categories.id', '=', 'imageproducts_category.category_id')
+			->join('texts_categories', 'texts_categories.category_id', '=', 'categories.id')
+			->select('texts_categories.name')
+			->where('imageproducts_category.imageproduct_id', '=', $id)
+			->where('texts_categories.language', '=', 'ES')
+			->get();
+			
+			$textImages = DB::table('texts_imageproducts')
+			->join('languages', 'languages.prefijo', '=', 'texts_imageproducts.language')
+			->select(
+			'texts_imageproducts.title', 
+			'texts_imageproducts.description',
+			'languages.name as lang_name'
+			)
+			->where('texts_imageproducts.imageproduct_id', '=', $id)
+			->get();
 			// If a column has a relationship associated with it, we do not want to show that field
 			$this->removeRelationshipField($dataType, 'read');
 
@@ -272,7 +289,7 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 					$view = "voyager::$slug.read";
 			}
 
-			return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'isSoftDeleted'));
+			return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'isSoftDeleted', 'categories', 'textImages'));
 	}
 
 	//***************************************
@@ -496,12 +513,11 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 			
 			$escapedHeader=[];
 			foreach($header as $key => $value) {
-				array_push($escapedHeader, $value);
+				array_push($escapedHeader, trim($value));
 			}
 
 			$datos = array();
 			while ($row = fgetcsv($file, 0, ';')) {
-			
 				$arr = array();
 				$header[0] = 'Titulo';
 				foreach ($header as $i => $col)
@@ -517,48 +533,38 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 				$Description = $data['Descripcion'];
 				$Category = $data['Categoria'];
 
-			$dataImage = ImageProduct::where('img_url', iconv("ISO-8859-1", "UTF-8", $Image_Url))->value('id'); 
+				$dataImage = ImageProduct::where('img_url', iconv("ISO-8859-1", "UTF-8", $Image_Url))->value('id'); 
 
 				if($dataImage!= null)
 				{
 					$TypeText = new TextsImageproducts();
 					$TypeText->imageproduct_id=$dataImage;
-					$TypeText->language=iconv("ISO-8859-1", "UTF-8", $Language);
-					$TypeText->title=iconv("ISO-8859-1", "UTF-8", $Title);
-					$TypeText->description=iconv("ISO-8859-1", "UTF-8", $Description);
+					$TypeText->language=iconv("ISO-8859-1", "UTF-8", trim($Language));
+					$TypeText->title=iconv("ISO-8859-1", "UTF-8", trim($Title));
+					$TypeText->description=iconv("ISO-8859-1", "UTF-8", trim($Description));
 					$TypeText->save();
-
-					$newCat = new ImageproductsCategory();
-					$newCat->imageproduct_id=$dataImage;
-					$newCat->category_id=$Category;
-					$newCat->save();
-
-
-
-
-				}
-
-				else
-				{
+				} else {
 					$dataNew = new $dataType->model_name();
-					$dataNew->img_url=iconv("ISO-8859-1", "UTF-8", $Image_Url);
+					$dataNew->img_url=iconv("ISO-8859-1", "UTF-8", 'imageproducts/'.trim($Image_Url));
 					$dataNew->user_id=1;
 					$dataNew->is_public=1;
 					$dataNew->status=1;
 					$dataNew->save();
 	
-					
-					$TypeText = new TextsImageproducts();
-					$TypeText->imageproduct_id=$dataNew->id;
-					$TypeText->language=iconv("ISO-8859-1", "UTF-8", $Language);
-					$TypeText->title=iconv("ISO-8859-1", "UTF-8", $Title);
-					$TypeText->description=iconv("ISO-8859-1", "UTF-8", $Description);
-					$TypeText->save();
+					if($dataNew!= null){
+						$TypeText = new TextsImageproducts();
+						$TypeText->imageproduct_id = $dataNew->id;
+						$TypeText->language = iconv("ISO-8859-1", "UTF-8", trim($Language));
+						$TypeText->title = iconv("ISO-8859-1", "UTF-8", trim($Title));
+						$TypeText->description = iconv("ISO-8859-1", "UTF-8", trim($Description));
+						$TypeText->save();
+						
+						$newCat = new ImageproductsCategory();
+						$newCat->imageproduct_id=$dataNew->id;
+						$newCat->category_id=$Category;
+						$newCat->save();
+					}
 
-					$newCat = new ImageproductsCategory();
-					$newCat->imageproduct_id=$dataNew->id;
-					$newCat->category_id=$Category;
-					$newCat->save();
 
 
 	
@@ -594,10 +600,7 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 			} else {
 				return response()->json(['success' => true, 'data' => $data]);
 			}
-		} 
-
-		else
-		{
+		} else {
 			if ($request->hasFile('image_product')) {
 				$request->validate([
 					'image_product' => 'required|image|max:20480', // Máximo 20 MB (20480 kilobytes)

@@ -13,8 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('phone')->limit(10)->after('date_of_birth');
+        Schema::create('locations_pauta', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+			$table->bigIncrements('id');
+			$table->unsignedBigInteger('pauta_id');
+			$table->foreign('pauta_id')->references('id')->on('pautas_users');
+			$table->string('location_prefix');
+			$table->timestamps();
         });
     }
 
@@ -25,7 +30,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('locations_pauta', function (Blueprint $table) {
             //
         });
     }

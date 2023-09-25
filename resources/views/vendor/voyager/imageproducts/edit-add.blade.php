@@ -140,21 +140,20 @@
 						<fieldset id="upload_csv" class="upload_dropZone text-center mb-3 p-4" style="display:none;">
 
                         
-				        <button type="button" class="btn btn-primary pull-center new-setting-btn" 
-										 onclick="downloadTemplate()">Descargar Plantilla CSV</button>
-</br>
-						
-						<div class="icon voyager-upload upload_svg"></div>
+							<button type="button" class="btn btn-primary pull-center new-setting-btn" onclick="downloadTemplate()">Descargar Plantilla CSV</button>
+							</br>
+							
+							<div class="icon voyager-upload upload_svg"></div>
 
-						<p class="small my-2">Arrastre y suelte el archivo<br><i>ó</i></p>
+							<p class="small my-2">Arrastre y suelte el archivo<br><i>ó</i></p>
 
-						<input name="image_product_2" id="image_product_2" data-post-name="image_background"  class="position-absolute invisible" type="file" accept=".csv" />
+							<input name="image_product_2" id="image_product_2" data-post-name="image_background"  class="position-absolute invisible" type="file" accept=".csv" />
 
-						<label class="btn btn-primary mb-3" for="image_product_2">Seleccionar archivo(s)</label>
+							<label class="btn btn-primary mb-3" for="image_product_2">Seleccionar archivo(s)</label>
 
-						<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
+							<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
 
-					</fieldset>
+						</fieldset>
 
 						<div class="form-group">
 							<div id="url-content" class="col-md-12" style="display: none;">
