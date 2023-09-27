@@ -96,8 +96,8 @@ class PautasUsersController extends Controller
     $categories_pauta = $request->categories_pauta;
     if(count($categories_pauta) > 0){
       foreach ($categories_pauta as $key => $value) {
-        $categories_pautas = CategoriesPauta::create([
-          'category_id' => $value,
+        $category_pauta = CategoriesPauta::create([
+          'category_id' => $value['id'],
           'pauta_id' => $result_id
         ]);
       } 	
@@ -107,8 +107,8 @@ class PautasUsersController extends Controller
     $locations_pauta = $request->locations_pauta;
     if(count($locations_pauta) > 0){
       foreach ($locations_pauta as $key => $value) {
-        $locations_pautas = CategoriesPauta::create([
-          'location_prefix' => $value,
+        $location_pauta = LocationsPauta::create([
+          'location_prefix' => $value['id'],
           'pauta_id' => $result_id
         ]);
       } 	

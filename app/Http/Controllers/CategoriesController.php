@@ -52,7 +52,7 @@ class CategoriesController extends Controller
       ->join('texts_categories', 'texts_categories.category_id', '=', 'categories.id')
       ->select(
         'categories.id', 
-        'texts_categories.name'
+        'texts_categories.name as item'
       )
       ->where('texts_categories.language', '=', $language)
       ->orderBy('categories.name', 'asc')

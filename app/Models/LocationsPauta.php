@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class LocationsPauta extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'pauta_id', 
+        'location_prefix',
+    ];
 }

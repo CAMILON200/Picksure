@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('categories_pauta', function (Blueprint $table) {
+        Schema::create('categories_pautas', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 			$table->bigIncrements('id');
 			$table->unsignedBigInteger('pauta_id');

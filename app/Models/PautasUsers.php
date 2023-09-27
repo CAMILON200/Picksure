@@ -9,15 +9,20 @@ class PautasUsers extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'id',
-        'user_id',
-        'valor',
-        'description',
-        'destination_url',
-        'img_url',
-    ];
-
+    public function categories_pauta()
+	{
+        return $this->hasMany('App\Models\CategoriesPauta', 'App\Models\LocationsPauta','category_id', 'location_prefix', 'pauta_id', 'pauta_id')->withPivot(
+            'id',
+            'user_id',
+            'valor',
+            'description',
+            'destination_url',
+            'category_id',
+            'location_prefix',
+            'img_url'
+        );
+	} 
+   
     /**
      * The attributes that should be cast.
      *

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LanguagesController;
+use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\ImageproductsController;
 use App\Http\Controllers\PautasUsersController;
 use App\Http\Controllers\ImagePautasController;
@@ -67,6 +68,9 @@ Route::post('/qualify/{id}', [QualifyController::class, 'createQualifyApp']);
 
 //languages
 Route::get('/languages', [LanguagesController::class, 'index']);
+
+//locations
+Route::get('/locations', [LocationsController::class, 'index']);
 
 //Images
 Route::get('/imageproducts/create_folder/{id}', [ImageproductsController::class, 'createDirectory']);

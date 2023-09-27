@@ -69,6 +69,7 @@ class ImageproductsController extends Controller
         ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description' )
         ->where('texts_imageproducts.language', '=', $language)
         ->where('imageproducts.status', '=', 1)
+        ->where('imageproducts.is_public', '=', 1)
         ->where('imageproducts.user_id', '=', 1)
         ->orderBy('imageproducts.created_at', 'DESC')
         ->offset($offset)->limit($limit)

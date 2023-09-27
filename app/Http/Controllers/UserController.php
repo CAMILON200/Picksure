@@ -444,9 +444,8 @@ class UserController extends Controller
     $user->email = $data->email;
     $user->password = bcrypt($data->password);
     $user->date_of_birth = $data->date_of_birth;
-    $user->location_id = $data->location_id;
+    $user->location = $data->location;
     $user->phone = $data->phone;
-    $user->city = $data->city;
     $user->role_id = $data->role_id;
     
     $user->save();
@@ -619,8 +618,7 @@ class UserController extends Controller
         'users.email', 
         'users.date_of_birth', 
         'users.phone', 
-        'users.location_id', 
-        'users.city', 
+        'users.location', 
         'users.created_at',
         'users.email_verified_at',
         'users.start_date_subscriber',

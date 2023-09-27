@@ -35,6 +35,10 @@ class ParametersSeeder extends Seeder
                 'name_parameter'         => 'max_images_per_pagination',
                 'value_parameter'        => '30',
             ]);
+            Parameters::create([
+                'name_parameter'         => 'price_per_images_pauta',
+                'value_parameter'        => '10000',
+            ]);
         }
     }
 }
