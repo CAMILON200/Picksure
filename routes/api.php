@@ -73,6 +73,7 @@ Route::get('/languages', [LanguagesController::class, 'index']);
 Route::get('/locations', [LocationsController::class, 'index']);
 
 //Images
+Route::post('/imageproducts_carga_masiva', [ImageproductsController::class, 'uploadFile']);
 Route::get('/imageproducts/create_folder/{id}', [ImageproductsController::class, 'createDirectory']);
 Route::post('/imageproducts/add', [ImageproductsController::class, 'addImageProducts']);
 Route::get('/imageproducts/user/{language}/{user_id}', [ImageproductsController::class, 'imagesForUser']);
@@ -83,7 +84,7 @@ Route::get('/imageproducts/filter/search/{language}', [ImageproductsController::
 Route::post('/imageproducts_searchimage/{language}/{limit}/{offset}', [ImageproductsController::class, 'search']);
 
 //Pautas
-Route::get('/pautasusers', [PautasUsersController::class, 'index']);
+Route::get('/pautasusers/{location}', [PautasUsersController::class, 'index']);
 Route::post('/pautasusers/create', [PautasUsersController::class, 'payPauta']);
 
 //Imagenes Pautadas

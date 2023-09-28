@@ -485,6 +485,42 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 			return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'languages', 'categories', 'itemTexts'));
 	}
 
+	private function groupArray($array,$groupkey)
+	{
+		if (count($array)>0)
+		{
+			$keys = array_keys($array[0]);
+			$removekey = array_search($groupkey, $keys);		
+			
+			if ($removekey===false)
+				return array("Clave \"$groupkey\" no existe");
+			else
+				unset($keys[$removekey]);
+
+			$groupcriteria = array();
+			$return=array();
+			foreach($array as $value)
+			{
+				$item=null;
+				foreach ($keys as $key)
+				{
+					$item[$key] = $value[$key];
+				}
+				$busca = array_search($value[$groupkey], $groupcriteria);
+				if ($busca === false)
+				{
+					$groupcriteria[]=$value[$groupkey];
+					$return[]=array($groupkey=>$value[$groupkey],'groupeddata'=>array());
+					$busca=count($return)-1;
+				}
+				$return[$busca]['groupeddata'][]=$item;
+			}
+			return $return;
+		}
+		else
+			return array();
+	}
+
 	/**
 	 * POST BRE(A)D - Store data.
 	 *
@@ -496,20 +532,13 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 	{
 		if ($request->hasFile('image_product_2')) {
 
-			$slug = $this->getSlug($request);
-
-			$dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
-
-			$this->authorize('add', app($dataType->model_name));
-			
-
 			$upload = $request->file('image_product_2');
 
 			$filePath = $upload->getRealPath();
 
 			$file=fopen($filePath, 'r');
 			
-			$header=fgetcsv($file, 0, ';');
+			$header=fgetcsv($file, 0, ',');
 			
 			$escapedHeader=[];
 			foreach($header as $key => $value) {
@@ -517,88 +546,71 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 			}
 
 			$datos = array();
-			while ($row = fgetcsv($file, 0, ';')) {
+			
+			while ($row = fgetcsv($file)) {
 				$arr = array();
-				$header[0] = 'Titulo';
+				$header[0] = 'URL_Imagen';
 				foreach ($header as $i => $col)
-					$arr[$col] = $row[$i];
-					
+					$arr[$col] = trim($row[$i]);
+				
 				$datos[] = $arr;
 			}
 
-			foreach($datos as $data) {
-				$Title = $data['Titulo'];
-				$Language = $data['Idioma'];
-				$Image_Url = $data['Imagen_Url'];
-				$Description = $data['Descripcion'];
-				$Category = $data['Categoria'];
+			$maintance_datos = $this->groupArray($datos, 'URL_Imagen');
 
-				$dataImage = ImageProduct::where('img_url', iconv("ISO-8859-1", "UTF-8", $Image_Url))->value('id'); 
+			foreach($maintance_datos as $data) {
+				$url_image = 'imageproducts/'.$data['URL_Imagen'];
+				$data_group = $data['groupeddata'];
 
-				if($dataImage!= null)
-				{
-					$TypeText = new TextsImageproducts();
-					$TypeText->imageproduct_id=$dataImage;
-					$TypeText->language=iconv("ISO-8859-1", "UTF-8", trim($Language));
-					$TypeText->title=iconv("ISO-8859-1", "UTF-8", trim($Title));
-					$TypeText->description=iconv("ISO-8859-1", "UTF-8", trim($Description));
-					$TypeText->save();
-				} else {
-					$dataNew = new $dataType->model_name();
-					$dataNew->img_url=iconv("ISO-8859-1", "UTF-8", 'imageproducts/'.trim($Image_Url));
-					$dataNew->user_id=1;
-					$dataNew->is_public=1;
-					$dataNew->status=1;
-					$dataNew->save();
-	
-					if($dataNew!= null){
-						$TypeText = new TextsImageproducts();
-						$TypeText->imageproduct_id = $dataNew->id;
-						$TypeText->language = iconv("ISO-8859-1", "UTF-8", trim($Language));
-						$TypeText->title = iconv("ISO-8859-1", "UTF-8", trim($Title));
-						$TypeText->description = iconv("ISO-8859-1", "UTF-8", trim($Description));
-						$TypeText->save();
-						
-						$newCat = new ImageproductsCategory();
-						$newCat->imageproduct_id=$dataNew->id;
-						$newCat->category_id=$Category;
-						$newCat->save();
-					}
+				$image = new Imageproduct;
+				$image->user_id = 1;
+				$image->is_public = 1;
+				$image->status = 1;
+				$image->img_url = $url_image;
+				$image->save();
+				$result_image = $image->id;
 
+				if(count($data_group) > 0){
+					$catSelected = [];
+					foreach ($data_group as $datosImg) {
+						if(trim($datosImg["Categoria"]) != ''){
+							$xplCategories = explode('|',trim($datosImg["Categoria"]));
+							foreach ($xplCategories as $v) {
+								if (!in_array(trim($v), $catSelected)) {
+								array_push($catSelected, "'".trim($v)."'");
+								}
+							}
+						}
 
+						$texts = TextsImageproducts::create([
+							'title' => $datosImg["Titulo"],
+							'language' => $datosImg["Idioma"],
+							'description' => $datosImg["Descripcion"],
+							'imageproduct_id' => $result_image,
+						]);
+					} 	
+					DB::commit();
 
-	
+					$idCategories = DB::select("SELECT id FROM categories WHERE slug in (".implode(",", $catSelected).")", []);//revisar con un replace el implode
+
+					foreach ($idCategories as $cat) {
+						$category = ImageproductsCategory::create([
+							'imageproduct_id' => $result_image,
+							'category_id' => $cat->id,
+						]);
+					} 	
+					DB::commit();
 				}
-				
-				
-
-			
-
-			
-		
-
-			
-
 			}
 
-			$data = $dataType['model_name']::limit(1)->orderBy('created_at', 'DESC')->get();
-			event(new BreadDataAdded($dataType, $data));
-
-		
-
 			if (!$request->has('_tagging')) {
-				if (auth()->user()->can('browse', $data[0])) {
-					$redirect = redirect()->route("voyager.{$dataType->slug}.index");
-				} else {
+				
 					$redirect = redirect()->back();
-				}
-
+				
 				return $redirect->with([
-					'message'    => __('voyager::generic.successfully_added_new')." {$dataType->getTranslatedAttribute('display_name_singular')}",
+					'message'    => "Se ejecuto correctamente la carga masiva",
 					'alert-type' => 'success',
 				]);
-			} else {
-				return response()->json(['success' => true, 'data' => $data]);
 			}
 		} else {
 			if ($request->hasFile('image_product')) {

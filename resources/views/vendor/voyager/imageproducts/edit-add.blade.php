@@ -140,7 +140,7 @@
 						<fieldset id="upload_csv" class="upload_dropZone text-center mb-3 p-4" style="display:none;">
 
                         
-							<button type="button" class="btn btn-primary pull-center new-setting-btn" onclick="downloadTemplate()">Descargar Plantilla CSV</button>
+							<a href="https://docs.google.com/spreadsheets/d/1czF0fX6nXT8nUr6EOE8EtTjR7fi7mze4ROpsJ6YYqLw" target="_blank" type="button" class="btn btn-primary pull-center new-setting-btn">Descargar Plantilla CSV</a>
 							</br>
 							
 							<div class="icon voyager-upload upload_svg"></div>
@@ -426,12 +426,12 @@
 			let csvData = 'Titulo;Idioma;Imagen_Url;Descripcion;Categoria\n';
    
          
-         // Download the CSV file
-         let anchor = document.createElement('a');
-         anchor.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvData);
-         anchor.target = '_blank';
-         anchor.download = 'List_Images.csv';
-         anchor.click(); 
+			// Download the CSV file
+			let anchor = document.createElement('a');
+			anchor.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvData);
+			anchor.target = '_blank';
+			anchor.download = 'List_Images.csv';
+			anchor.click(); 
 
 	
 

@@ -51,17 +51,21 @@ class PautasUsersController extends Controller
      *  )
      * )
      */
-  public function index(Request $request)
+  public function index(Request $request, $location)
   {  	
-    $image = DB::select("SELECT pu.id , pu.img_url , pu.destination_url , pu.description , 
-      pu.user_id , u.avatar , CONCAT(u.name,' ',u.last_name) as name 
-      FROM pautas_users pu 
-      INNER JOIN users u ON u.id = pu.user_id
-      WHERE CURRENT_DATE() BETWEEN pu.start_date
-      and pu.end_date and pu.status = 1", []);
+    $image = [];
+    if($location != ''){
+      $image = DB::select("SELECT pu.id , pu.img_url , pu.destination_url , pu.description , 
+        pu.user_id , u.avatar , CONCAT(u.name,' ',u.last_name) as name 
+        FROM pautas_users pu 
+        INNER JOIN users u ON u.id = pu.user_id
+        LEFT JOIN locations_pautas lp ON lp.pauta_id = pu.id
+        WHERE CURRENT_DATE() BETWEEN pu.start_date
+        and pu.end_date and pu.status = 1 and lp.location_prefix = '$location'", []);
+    }
       
-      $response['status'] = 200;
-      $response['data'] = $image; 
+    $response['status'] = 200;
+    $response['data'] = $image; 
     
     return response()->json($response, $response['status']);
   } 
