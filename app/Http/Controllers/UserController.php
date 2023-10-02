@@ -139,7 +139,7 @@ class UserController extends Controller
       }
       return $response['data'];
     }
-/**
+    /**
      * @OA\Delete(
      *  tags={"Likes"},
      *  summary="Elimina un like dado por un usuairo",
@@ -184,7 +184,7 @@ class UserController extends Controller
      *  )
      * )
      */
-  /**Delete Like ImageProduct*/
+    /**Delete Like ImageProduct*/
   public function deleteLikeImageproduct($user_id, $img_id)
   {
     $delete = DB::table('user_like_imageproduct')
@@ -194,7 +194,7 @@ class UserController extends Controller
     return response()->json('Se elimino este like', 200);
   }
 
- /**
+    /**
      * @OA\Post(
      *  tags={"Likes"},
      *  summary="Crea like que un usuario de a las categorias",

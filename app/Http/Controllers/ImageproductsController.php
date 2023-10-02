@@ -17,6 +17,13 @@ use function PHPUnit\Framework\isEmpty;
 
 class ImageproductsController extends Controller
 {
+  public $arrayRoles;
+ 
+  public function __construct()
+  {
+      $this->arrayRoles = ['admin', 'superadmin'];
+  }
+  //private $arrayRoles = ['admin', 'superadmin'];
   /**
      * @OA\Get(
      *  tags={"Imagenes"},
@@ -64,13 +71,21 @@ class ImageproductsController extends Controller
 		public function index(Request $request, $language, $limit, $offset)
     {  	
       if($language){
+        $getRoles = DB::table('users')
+        ->join('roles', 'roles.id', '=', 'users.role_id')
+        ->whereIn('roles.name', $this->arrayRoles)
+        ->select('users.id')
+        ->get()
+        ->toArray();
+
+        $usersId = array_column($getRoles,'id');
         $image = DB::table('imageproducts')
         ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
         ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description' )
         ->where('texts_imageproducts.language', '=', $language)
         ->where('imageproducts.status', '=', 1)
         ->where('imageproducts.is_public', '=', 1)
-        ->where('imageproducts.user_id', '=', 1)
+        ->whereIn('imageproducts.user_id', $usersId)
         ->orderBy('imageproducts.created_at', 'DESC')
         ->offset($offset)->limit($limit)
         ->get();
@@ -130,12 +145,21 @@ class ImageproductsController extends Controller
 		public function imagesForUser (Request $request, $language, $user_id)
     {  	
       if($language){
+        $getRoles = DB::table('users')
+        ->join('roles', 'roles.id', '=', 'users.role_id')
+        ->whereIn('roles.name', $this->arrayRoles)
+        ->select('users.id')
+        ->get()
+        ->toArray();
+
+        $usersId = array_column($getRoles,'id');
+        
         $image = DB::table('imageproducts')
         ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
         ->leftJoin('images_pautas', 'imageproducts.id', '=', 'images_pautas.imageproducts_id')
         ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description', 'images_pautas.id as id_pautas')
         ->where('texts_imageproducts.language', '=', $language)
-        ->where('imageproducts.user_id', '=', $user_id)
+        ->whereIn('imageproducts.user_id', $usersId)
         ->get();
         $response['status'] = 200;
         $response['data'] = $image; 
@@ -368,6 +392,15 @@ class ImageproductsController extends Controller
   public function search(Request $request, $language, $limit, $offset)
   {    	
     //$languageData = Language::where('abreviatura', $language)->first();
+    
+    $getRoles = DB::table('users')
+      ->join('roles', 'roles.id', '=', 'users.role_id')
+      ->whereIn('roles.name', $this->arrayRoles)
+      ->select('users.id')
+      ->get()
+      ->toArray();
+
+      $usersId = array_column($getRoles,'id');
 
     $image = DB::table('imageproducts')
       ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
@@ -375,7 +408,7 @@ class ImageproductsController extends Controller
       ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description', 'imageproducts_category.category_id' )
       ->where('texts_imageproducts.language', '=', $language)
       ->where('imageproducts.status', '=', 1)
-      ->where('imageproducts.user_id', '=', 1)
+      ->whereIn('imageproducts.user_id', $usersId)
       ->when(!empty($request->category), function($category) use ($request) {
         return $category->where('imageproducts_category.category_id', '=', $request->category);
       })

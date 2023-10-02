@@ -182,7 +182,7 @@
 						</div>
 						<input type="hidden" name="is_public" class="is_public" value="1"/>
 						<input type="hidden" name="status" class="status" value="1"/>
-						<input type="hidden" name="user_id" class="user_id" value="1"/>
+						<input type="hidden" name="user_id" class="user_id" value="{{Auth::user()->id}}"/>
 
 						<hr>
 						<div class="form-group itemInfo">
