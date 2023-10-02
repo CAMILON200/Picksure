@@ -195,8 +195,12 @@
                                                                                     {{ $data->{$row->field} }}
                                                                                 @endif
                                                                             @elseif($row->type == 'text')
-																				@include('voyager::multilingual.input-hidden-bread-browse')
-																				<div>{{ mb_strlen( $data->{$row->field} ) > 200 ? mb_substr($data->{$row->field}, 0, 200) . ' ...' : $data->{$row->field} }}</div>
+                                                                                @if ($row->field == 'img_url')
+                                                                                    <img src="@if( !filter_var($data->{$row->field}, FILTER_VALIDATE_URL)){{ Voyager::image( $data->{$row->field} ) }}@else{{ $data->{$row->field} }}@endif" style="width:100px">
+                                                                                @else
+																				    @include('voyager::multilingual.input-hidden-bread-browse')
+																				    <div>{{ mb_strlen( $data->{$row->field} ) > 200 ? mb_substr($data->{$row->field}, 0, 200) . ' ...' : $data->{$row->field} }}</div>
+                                                                                @endif
 																			@elseif($row->type == 'text_area')
 																				@include('voyager::multilingual.input-hidden-bread-browse')
 																				<div>{{ mb_strlen( $data->{$row->field} ) > 200 ? mb_substr($data->{$row->field}, 0, 200) . ' ...' : $data->{$row->field} }}</div>

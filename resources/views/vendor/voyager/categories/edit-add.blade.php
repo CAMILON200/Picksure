@@ -18,7 +18,6 @@
     </h1>
     @include('voyager::multilingual.language-selector')
 @stop
-
 @section('content')
     <div class="page-content edit-add container-fluid">
         <div class="row">

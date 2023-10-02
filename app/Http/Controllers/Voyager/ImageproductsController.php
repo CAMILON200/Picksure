@@ -20,6 +20,7 @@ use App\Models\Language;
 use App\Models\Imageproduct;
 use App\Models\TextsImageproducts;
 use App\Models\ImageproductsCategory;
+use App\Models\ImagesPautas;
 use TCG\Voyager\Models\Category;
 use Livewire\Component;
 
@@ -350,26 +351,26 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 			}
 			$languages = Language::all();
 			$categories = DB::table('categories')
-      ->leftJoin('imageproduct_category', function($leftJoin) use ($id){
-        $leftJoin->on('categories.id', '=', 'imageproduct_category.category_id')
-        ->where('imageproduct_category.imageproduct_id', '=', $id);
-      })
-      ->select(
-        'categories.id', 
-				'categories.name', 
-        'imageproduct_category.category_id',
-        DB::raw('(CASE WHEN imageproduct_category.category_id IS NULL THEN false ELSE true END) as selected') 
-      )
-      ->orderBy('categories.order', 'asc')
-			->orderBy('categories.slug', 'asc')
-      ->get();
+			->leftJoin('imageproducts_category', function($leftJoin) use ($id){
+				$leftJoin->on('categories.id', '=', 'imageproducts_category.category_id')
+				->where('imageproducts_category.imageproduct_id', '=', $id);
+			})
+			->select(
+				'categories.id', 
+						'categories.name', 
+				'imageproducts_category.category_id',
+				DB::raw('(CASE WHEN imageproducts_category.category_id IS NULL THEN false ELSE true END) as selected') 
+			)
+			->orderBy('categories.order', 'asc')
+					->orderBy('categories.slug', 'asc')
+			->get();
 			
 			$texts = DB::table('texts_imageproducts')
-				->join('languages', 'texts_imageproducts.language_id', '=', 'languages.id')
-				->select('*')
-				->where('imageproduct_id', '=', $id)
-				->get();
-					
+			->join('languages', 'texts_imageproducts.language', '=', 'languages.prefijo')
+			->select('*')
+			->where('imageproduct_id', '=', $id)
+			->get();
+				
 			$itemTexts = $texts;
 
 			return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'languages', 'categories', 'itemTexts'));
@@ -529,7 +530,7 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function store(Request $request)
-	{
+	{	
 		if ($request->hasFile('image_product_2')) {
 
 			$upload = $request->file('image_product_2');
@@ -626,13 +627,14 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 				//$request['img_url'] = asset('storage/posts/' . $path);
 				$request['img_url'] = $path;
 			}
+			
 			$slug = $this->getSlug($request);
 	
 			$dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
 	
 			// Check permission
 			$this->authorize('add', app($dataType->model_name));
-	
+			
 			// Validate fields with ajax
 			$val = $this->validateBread($request->all(), $dataType->addRows)->validate();
 			$data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
@@ -711,6 +713,11 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 					$model = app($dataType->model_name);
 					if (!($model && in_array(SoftDeletes::class, class_uses_recursive($model)))) {
 							$this->cleanup($dataType, $data);
+					}
+
+					$imgPauta = DB::table('images_pautas')->where('imageproducts_id', $id)->first();
+					if($imgPauta){
+						ImagesPautas::where('imageproducts_id', $id)->delete();
 					}
 					TextsImageproducts::where('imageproduct_id', $id)->delete();
 					ImageproductsCategory::where('imageproduct_id', $id)->delete();
