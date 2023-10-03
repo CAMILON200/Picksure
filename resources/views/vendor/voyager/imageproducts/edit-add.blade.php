@@ -64,20 +64,19 @@
 	$edit = !is_null($dataTypeContent->getKey());
 	$add  = is_null($dataTypeContent->getKey());
 @endphp
-
 @extends('voyager::master')
 
 @section('css')
-	<meta name="csrf-token" content="{{ csrf_token() }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @stop
 
 @section('page_title', __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular'))
 @section('page_header')
-	<h1 class="page-title">
-		<i class="{{ $dataType->icon }}"></i>
-		{{ __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular') }}
-	</h1>
-	@include('voyager::multilingual.language-selector')
+<h1 class="page-title">
+	<i class="{{ $dataType->icon }}"></i>
+	{{ __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular') }}
+</h1>
+@include('voyager::multilingual.language-selector')
 @stop
 
 @section('content')
@@ -140,7 +139,7 @@
 						<fieldset id="upload_csv" class="upload_dropZone text-center mb-3 p-4" style="display:none;">
 
                         
-							<a href="https://docs.google.com/spreadsheets/d/1czF0fX6nXT8nUr6EOE8EtTjR7fi7mze4ROpsJ6YYqLw" target="_blank" type="button" class="btn btn-primary pull-center new-setting-btn">Descargar Plantilla CSV</a>
+							<a href="{{$url_bulck_load}}" target="_blank" type="button" class="btn btn-primary pull-center new-setting-btn">Descargar Plantilla CSV</a>
 							</br>
 							
 							<div class="icon voyager-upload upload_svg"></div>

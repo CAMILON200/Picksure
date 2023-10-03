@@ -145,21 +145,12 @@ class ImageproductsController extends Controller
 		public function imagesForUser (Request $request, $language, $user_id)
     {  	
       if($language){
-        $getRoles = DB::table('users')
-        ->join('roles', 'roles.id', '=', 'users.role_id')
-        ->whereIn('roles.name', $this->arrayRoles)
-        ->select('users.id')
-        ->get()
-        ->toArray();
-
-        $usersId = array_column($getRoles,'id');
-        
         $image = DB::table('imageproducts')
         ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
         ->leftJoin('images_pautas', 'imageproducts.id', '=', 'images_pautas.imageproducts_id')
         ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description', 'images_pautas.id as id_pautas')
         ->where('texts_imageproducts.language', '=', $language)
-        ->whereIn('imageproducts.user_id', $usersId)
+        ->where('imageproducts.user_id','=', $user_id)
         ->get();
         $response['status'] = 200;
         $response['data'] = $image; 
@@ -525,7 +516,7 @@ class ImageproductsController extends Controller
       foreach ($itemCategoryARR as $key => $value) {
         $texts = ImageproductsCategory::create([
           'imageproduct_id' => $result_image,
-          'category_id' => $value,
+          'category_id' => $value['id'],
         ]);
       } 	
       DB::commit();

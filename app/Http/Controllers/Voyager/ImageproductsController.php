@@ -370,10 +370,16 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 			->select('*')
 			->where('imageproduct_id', '=', $id)
 			->get();
-				
+			
+			$parameterUrl = DB::table('parameters')
+			->select('parameters.value_parameter')
+			->where('parameters.name_parameter', '=', 'url_drive_bulck_load')
+			->first();
+			
+			$url_bulck_load = $parameterUrl->value_parameter;
 			$itemTexts = $texts;
 
-			return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'languages', 'categories', 'itemTexts'));
+			return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'languages', 'categories', 'itemTexts', 'url_bulck_load'));
 	}
 
 	// POST BR(E)AD
@@ -479,11 +485,18 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 					$view = "voyager::$slug.edit-add";
 			}
 
+			$parameterUrl = DB::table('parameters')
+			->select('parameters.value_parameter')
+			->where('parameters.name_parameter', '=', 'url_drive_bulck_load')
+			->first();
+			
+			$url_bulck_load = $parameterUrl->value_parameter;
+
 			$languages = Language::all();
 			$categories = Category::all();
 			$itemTexts = $this->itemTexts;
 
-			return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'languages', 'categories', 'itemTexts'));
+			return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'languages', 'categories', 'itemTexts', 'url_bulck_load'));
 	}
 
 	private function groupArray($array,$groupkey)
