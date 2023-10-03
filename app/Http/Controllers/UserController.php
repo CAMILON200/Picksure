@@ -611,10 +611,12 @@ class UserController extends Controller
   public function ShowInfoUser($user_id){
 
     $$user_id = DB::table('users')
+      ->join('roles', 'users.role_id', '=', 'roles.id')
       ->select(
         'users.id', 
         'users.name', 
         'users.last_name', 
+        'roles.name as name_rol',
         'users.email', 
         'users.date_of_birth', 
         'users.phone', 
