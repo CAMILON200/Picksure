@@ -243,11 +243,14 @@ class UserController extends Controller
   {
 
     $response = ['status' => 404, 'data' => [] ];
-    $data = json_decode($request->getContent());
 
-    foreach($data->categories as $category){
+    $delete = DB::table('user_like_category')
+    ->where('user_id', $request->user_id)
+    ->delete();
+
+    foreach($request->categories as $category){
       $likeCategory = UserLikeCategory::create([
-        'user_id' => $data->user_id,
+        'user_id' => $request->user_id,
         'category_id' => $category
       ]);
     }    
