@@ -295,7 +295,7 @@ class ImageproductsController extends Controller
   public function categoryId(Request $request, $language, $category_id)
   {  
     //$languageData = Language::where('abreviatura', $language)->first();
-    $images = DB::table('imageproductss')
+    $images = DB::table('imageproducts')
       ->join('texts_imageproducts','texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
       ->join('imageproducts_category', 'imageproducts_category.imageproduct_id', '=', 'imageproducts.id')
       ->join('categories', 'categories.id', '=', 'imageproducts_category.category_id')
@@ -304,12 +304,12 @@ class ImageproductsController extends Controller
       ->where('texts_imageproducts.language', $language)
       ->where('texts_categories.language', $language)
       ->where('imageproducts_category.category_id', $category_id)
-      ->where('imageproducts_category.is_public', 1)
-      ->where('imageproducts_category.status', 1)
+      ->where('imageproducts.is_public', 1)
+      ->where('imageproducts.status', 1)
       ->get();
       if(!count($images) > 0){
         $response['status'] = Response::HTTP_NOT_FOUND;
-        $response['data'] = 'Esta categoria no existe o no existe dentro del lenguaje especificado';
+        $response['data'] = [];
       }else{
         $response['status'] = Response::HTTP_OK;
         $response['data'] = $images;
