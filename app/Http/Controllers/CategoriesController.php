@@ -48,15 +48,12 @@ class CategoriesController extends Controller
 	public function index(Request $request, $language)
   {    	
     if($language){
-      $categories = DB::table('categories')
-      ->join('texts_categories', 'texts_categories.category_id', '=', 'categories.id')
-      ->select(
-        'categories.id', 
-        'texts_categories.name as item'
-      )
-      ->where('texts_categories.language', '=', $language)
-      ->orderBy('categories.name', 'asc')
-      ->get();
+      $categories = DB::select("SELECT categories.id, texts_categories.name as item 
+      FROM categories 
+      INNER JOIN texts_categories ON texts_categories.category_id = categories.id 
+      where texts_categories.language = '$language' AND id IN (SELECT ic.category_id FROM imageproducts_category ic GROUP BY ic.category_id)
+      ORDER BY categories.name ASC", []);
+    
       $response['status'] = 200;
       $response['data'] = $categories; 
     }else {
