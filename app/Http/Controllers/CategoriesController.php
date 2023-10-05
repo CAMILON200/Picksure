@@ -51,7 +51,13 @@ class CategoriesController extends Controller
       $categories = DB::select("SELECT categories.id, texts_categories.name as item 
       FROM categories 
       INNER JOIN texts_categories ON texts_categories.category_id = categories.id 
-      where texts_categories.language = '$language' AND id IN (SELECT ic.category_id FROM imageproducts_category ic GROUP BY ic.category_id)
+      where texts_categories.language = '$language' AND id IN (
+        SELECT ic.category_id 
+        FROM imageproducts_category ic 
+        INNER JOIN imageproducts i ON i.id = ic.imageproduct_id 
+        where i.status = 1 and i.is_public = 1
+        GROUP by ic.category_id
+      )
       ORDER BY categories.name ASC", []);
     
       $response['status'] = 200;
