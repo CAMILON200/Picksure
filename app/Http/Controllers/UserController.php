@@ -456,6 +456,7 @@ class UserController extends Controller
     $userInfo = User::where('email', $data->email)->first();
     $userInfo["suscriptions"] = [];
     $userInfo["pautantes"] = [];
+    $userInfo["pautantes_history"] = [];
     $userInfo["likeCategory"] = [];
     $userInfo["likeImageproduct"] = [];
     //return redirect('/home');
@@ -664,11 +665,18 @@ class UserController extends Controller
         ->get();
         //}
 
+        $pautantes_history = DB::select("SELECT pu.id , pu.img_url , pu.destination_url , pu.description , 
+        pu.user_id , u.avatar , CONCAT(u.name,' ',u.last_name) as name, pu.start_date, pu.end_date, pu.valor 
+        FROM pautas_users pu 
+        INNER JOIN users u ON u.id = pu.user_id
+        WHERE pu.user_id = $user_id", []);
+
         $likeCategory = $this->showLikeCategory($user_id, 'ES');
         $likeImageproduct = $this->showLikeImageproduct($user_id, 'ES');
 
         $$user_id->suscriptions = $payment_suscription;
         $$user_id->pautantes = $payment_pautante;
+        $$user_id->pautantes_history = $pautantes_history;
         $$user_id->likeCategory = $likeCategory;
         $$user_id->likeImageproduct = $likeImageproduct;
 
