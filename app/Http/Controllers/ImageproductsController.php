@@ -147,7 +147,7 @@ class ImageproductsController extends Controller
       if($language){
         $image = DB::table('imageproducts')
         ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
-        ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description)
+        ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description')
         ->where('texts_imageproducts.language', '=', $language)
         ->where('imageproducts.user_id','=', $user_id)
         ->get();
