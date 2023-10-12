@@ -515,7 +515,7 @@ class ImageproductsController extends Controller
       foreach ($itemCategoryARR as $key => $value) {
         $texts = ImageproductsCategory::create([
           'imageproduct_id' => $result_image,
-          'category_id' => $value['id'],
+          'category_id' => $value,
         ]);
       } 	
       DB::commit();
