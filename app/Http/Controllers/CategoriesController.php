@@ -48,7 +48,7 @@ class CategoriesController extends Controller
 	public function index(Request $request, $language)
   {    	
     if($language){
-      $categories = DB::select("SELECT categories.id, texts_categories.name as item 
+      $categories = DB::select("SELECT categories.id as value, texts_categories.name as label 
       FROM categories 
       INNER JOIN texts_categories ON texts_categories.category_id = categories.id 
       where texts_categories.language = '$language' AND id IN (
