@@ -84,8 +84,10 @@ Route::get('/imageproducts/filter/search/{language}', [ImageproductsController::
 Route::post('/imageproducts_searchimage/{language}/{limit}/{offset}', [ImageproductsController::class, 'search']);
 
 //Pautas
+Route::get('/pautasusers/{location}/{category_id}', [PautasUsersController::class, 'pautaForCategory']);
 Route::get('/pautasusers/{location}', [PautasUsersController::class, 'index']);
 Route::post('/pautasusers/create', [PautasUsersController::class, 'payPauta']);
+Route::post('/pautasusers/active', [PautasUsersController::class, 'activePauta']);
 
 //Imagenes Pautadas
 Route::get('/imagepautas/{user_id}/{pauta_id}/{language}', [ImagePautasController::class, 'index']);

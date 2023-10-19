@@ -69,6 +69,61 @@ class PautasUsersController extends Controller
     
     return response()->json($response, $response['status']);
   } 
+  
+  /**
+     * @OA\Get(
+     *  tags={"Categorias"},
+     *  summary="Devuelve todas los Categorias filtrando el lenguage recibido",
+     *  description="Retorna un Json con los Datos de las Categorias.",
+     *  path="/api/v1/categories/{language}",
+     *  security={{ "bearerAuth": {} }},
+     *  @OA\Parameter(
+     *    name="language",
+     *    in="path",
+     *    description="Prefijo del idioma",
+     *    required=true,
+     *    @OA\Schema(
+     *      default="ES",
+     *      type="string",
+     *    )
+     *  ),
+     *  @OA\Response(
+     *    response=200,
+     *    description="Resultado de la Operación",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="status", type="integer", example="200"),
+     *       @OA\Property(type="array",@OA\Items(type="array",@OA\Items())),
+     *    )
+     *  ),
+     *  @OA\Response(
+     *    response=422,
+     *    description="Estado Invalido de la Operación",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Los datos son incorrectos."),
+     *       @OA\Property(property="error", type="string", example="..."),
+     *    )
+     *  )
+     * )
+     */
+  public function pautaForCategory(Request $request, $location, $category_id)
+  {  	
+    $image = [];
+    if($location != ''){
+      $image = DB::select("SELECT pu.id , pu.img_url , pu.destination_url , pu.description , 
+        pu.user_id , u.avatar , CONCAT(u.name,' ',u.last_name) as name, pu.start_date, pu.end_date, pu.valor 
+        FROM pautas_users pu 
+        INNER JOIN users u ON u.id = pu.user_id
+        LEFT JOIN locations_pautas lp ON lp.pauta_id = pu.id
+        LEFT JOIN categories_pautas cp ON cp.pauta_id = pu.id 
+        WHERE CURRENT_DATE() BETWEEN pu.start_date
+        and pu.end_date and pu.status = 1 and lp.location_prefix = '$location' and cp.category_id = $category_id", []);
+    }
+      
+    $response['status'] = 200;
+    $response['data'] = $image; 
+    
+    return response()->json($response, $response['status']);
+  } 
 
   public function payPauta(Request $request) {
     $imgsData = Imageproduct::where('id', intval($request->imgs_pauta[0]))->first();
@@ -131,6 +186,63 @@ class PautasUsersController extends Controller
     $response["status"] = 200;
     $response["id"] = $result_id;
     $response["message"] = 'La pauta creada exitosamente.';
+
+    return response()->json($response, $response['status']);
+  }
+  
+  /**
+     * @OA\Get(
+     *  tags={"Categorias"},
+     *  summary="Devuelve las categorias y si el usuario las tiene marcada con Like(Me gusta)",
+     *  description="Retorna Categorias con Like",
+     *  path="/api/v1/categories/user/{language}",
+     *  security={{ "bearerAuth": {} }},
+     *  @OA\Parameter(
+     *    name="language",
+     *    in="path",
+     *    description="Prefijo del Idioma",
+     *    required=true,
+     *    @OA\Schema(
+     *      default="ES",
+     *      type="string",
+     *    )
+     *  ),
+     *  @OA\Parameter(
+     *    name="user_id",
+     *    in="query",
+     *    description="ID del Usuario",
+     *    required=true,
+     *    @OA\Schema(
+     *      default="1",
+     *      type="integer",
+     *    )
+     *  ),
+     *  @OA\Response(
+     *    response=200,
+     *    description="Resultado de la Operación",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="id", type="integer", example="1"),
+     *       @OA\Property(property="name", type="string", example="Cali"),
+     *    )
+     *  ),
+     *  @OA\Response(
+     *    response=422,
+     *    description="Estado Invalido de la Operación",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="Los datos son incorrectos."),
+     *       @OA\Property(property="errors", type="string", example="..."),
+     *    )
+     *  )
+     * )
+     */
+  public function activePauta(Request $request) {
+    $pauta = PautasUsers::find($request->id);
+    $pauta->status = $request->status;
+    $pauta->save();
+
+    $response["status"] = 200;
+    $response["data"] = $pauta;
+    $response["message"] = 'La pauta se actualizo exitosamente.';
 
     return response()->json($response, $response['status']);
   }
