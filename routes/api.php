@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GiftVoucherContoller;
 use App\Http\Controllers\LanguagesController;
 use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\ImageproductsController;
@@ -50,6 +51,10 @@ Route::post('/user/pay_suscription', [UserController::class, 'PaySuscription']);
 Route::delete('/user/delete_users/{user_id}', [UserController::class, 'DeleteUser']);
 Route::put('/user/update_users/{user_id}', [UserController::class, 'UpdateUser']);
 Route::get('/user/show_users/{user_id}', [UserController::class, 'ShowInfoUser']);
+
+//GiftVoucher
+Route::get('/giftvoucher/{code}/{type}', [GiftVoucherContoller::class, 'read']);
+
 //Categories
 Route::get('/categories/{language}', [Category::class, 'index']);
 Route::get('/categories/user/{language}', [Category::class, 'categoryUser']);

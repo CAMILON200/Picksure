@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PaymentHistory;
 use App\Models\User;
+use App\Models\PaymentHistory;
+use App\Models\GiftVoucher;
 use App\Models\UserLikeCategory;
 use App\Models\UserLikeImageproduct;
 use Illuminate\Http\Request;
@@ -557,6 +558,12 @@ class UserController extends Controller
   }
 
   public function PaySuscription(Request $request) {
+    if(isset($request->gift_voucher)){
+      $giftVoucher = GiftVoucher::find($request->gift_voucher);
+      $giftVoucher->state = 0;
+      $giftVoucher->update();
+    }
+
     $user = User::find($request->id);
     $user->start_date_subscriber = $request->start_date_subscriber;
     $user->end_date_subscriber = $request->end_date_subscriber;
