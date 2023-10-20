@@ -87,6 +87,7 @@ Route::get('/imageproducts/{language}/{image_id}', [ImageproductsController::cla
 Route::get('/imageproducts_category/{language}/{category_id}', [ImageproductsController::class, 'categoryId']);
 Route::get('/imageproducts/filter/search/{language}', [ImageproductsController::class, 'search']);
 Route::post('/imageproducts_searchimage/{language}/{limit}/{offset}', [ImageproductsController::class, 'search']);
+Route::get('/imageproducts_delete/{id}', [ImageproductsController::class, 'deleteImageProducts']);
 
 //Pautas
 Route::get('/pautasusers/{location}/{category_id}', [PautasUsersController::class, 'pautaForCategory']);

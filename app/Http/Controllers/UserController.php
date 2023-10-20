@@ -366,10 +366,9 @@ class UserController extends Controller
     $user_id = DB::table('user_like_category')
       ->join('categories', 'categories.id', '=', 'user_like_category.category_id')
       ->join('texts_categories','texts_categories.category_id', '=', 'categories.id')
-      ->select('user_like_category.user_id', 'categories.id','texts_categories.language','texts_categories.name')
+      ->select('user_like_category.user_id', 'categories.id as value','texts_categories.language','texts_categories.name as label')
       ->where('user_like_category.user_id', $user_id)
       ->where('texts_categories.language', $language)
-      
       ->get();
      if(!count($user_id) > 0){
       $response['status'] = Response::HTTP_NOT_FOUND;

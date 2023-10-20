@@ -150,6 +150,7 @@ class ImageproductsController extends Controller
         ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description')
         ->where('texts_imageproducts.language', '=', $language)
         ->where('imageproducts.user_id','=', $user_id)
+        ->where('imageproducts.status','=', 1)
         ->get();
         $response['status'] = 200;
         $response['data'] = $image; 
@@ -710,5 +711,13 @@ class ImageproductsController extends Controller
        
       */
 		}
+  }
+
+  public function deleteImageProducts(Request $request, $id){
+    $image = Imageproduct::find($request->id);
+    $image->status = 0;
+    $image->save();
+    
+    return response()->json(['success' => true, 'data' => $image, 'message' => 'Se eliminó correctamente']);
   }
 }
