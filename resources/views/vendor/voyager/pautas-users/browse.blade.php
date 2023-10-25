@@ -408,8 +408,8 @@
                     let class_state_inactive = '<span class="badge badge-danger">Inactivo</span>'
                     let class_state_update = state == 1 ? class_state_active : class_state_inactive
                     $('#content-state-'+id).html(class_state_update)
-                    let class_btn_active = '<a href="javascript:void(0)" onclick="setPauta({{$data->getKey()}},1)" class="badge badge-primary"><i class="voyager-check"></i></a>' 
-                    let class_btn_inactive = '<a href="javascript:void(0)" onclick="setPauta({{$data->getKey()}},2)" class="badge badge-secondary"><i class="voyager-x"></i></a>'
+                    let class_btn_active = '<a href="javascript:void(0)" onclick="setPauta('+id+',1)" class="badge badge-primary"><i class="voyager-check"></i></a>' 
+                    let class_btn_inactive = '<a href="javascript:void(0)" onclick="setPauta('+id+',2)" class="badge badge-secondary"><i class="voyager-x"></i></a>'
                     let class_btn_update = state == 1 ? class_btn_inactive : class_btn_active   
                     $('#action-status-'+id).html(class_btn_update)
 

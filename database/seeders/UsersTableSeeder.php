@@ -18,6 +18,21 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         if (User::count() == 0) {
+            $role_sa = Role::where('name', 'superadmin')->firstOrFail();
+            $locations = Locations::where('name', 'Colombia')->firstOrFail();
+
+            User::create([
+                'name'           => 'Super Admin',
+                'email'          => 'superadmin@admin.com',
+                'password'       => bcrypt('password'),
+                'remember_token' => Str::random(60),
+                'role_id'        => $role->id,
+                'last_name'      => 'Picksure',
+                'date_of_birth'  => '2023-05-29',
+                'phone'          => '213123',
+                'location'       => 'CO',
+            ]);
+
             $role = Role::where('name', 'admin')->firstOrFail();
             $locations = Locations::where('name', 'Cali')->firstOrFail();
 

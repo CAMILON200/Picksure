@@ -139,18 +139,19 @@
 						<fieldset id="upload_csv" class="upload_dropZone text-center mb-3 p-4" style="display:none;">
 
                         
-							<a href="{{$url_bulck_load}}" target="_blank" type="button" class="btn btn-primary pull-center new-setting-btn">Descargar Plantilla CSV</a>
-							</br>
-							
-							<div class="icon voyager-upload upload_svg"></div>
-
-							<p class="small my-2">Arrastre y suelte el archivo<br><i>ó</i></p>
-
-							<input name="image_product_2" id="image_product_2" data-post-name="image_background"  class="position-absolute invisible" type="file" accept=".csv" />
-
-							<label class="btn btn-primary mb-3" for="image_product_2">Seleccionar archivo(s)</label>
-
-							<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
+						
+						<div class="icon voyager-upload upload_svg"></div>
+						
+						<p class="small my-2"></p>
+						
+						<input name="image_product_2" id="image_product_2" data-post-name="image_background"  class="position-absolute invisible" type="file" accept=".csv" />
+						
+						<label class="btn btn-primary mb-3" for="image_product_2">Seleccionar archivo(s)</label>
+						
+						</br>
+						
+						<a href="{{$url_bulck_load}}" target="_blank" type="button">Descargar Plantilla CSV</a>
+						<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
 
 						</fieldset>
 
@@ -562,7 +563,6 @@
 	const isCSVFile = file =>['text/csv'].includes(file.type);
 
   function previewFiles(dataRefs) {
-	console.log(dataRefs.files[0].type);
 	
     if (!dataRefs.gallery) return;
 
@@ -575,18 +575,18 @@
 		dataRefs.gallery.appendChild(text);
 	}
 	else{
-    for (const file of dataRefs.files) {
-      let reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = function() {
-        let img = document.createElement('img');
-        img.className = 'upload_img mt-2';
-        img.setAttribute('alt', file.name);
-        img.src = reader.result;
-        dataRefs.gallery.appendChild(img);
-      }
-    }
-  }
+		for (const file of dataRefs.files) {
+			let reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onloadend = function() {
+				let img = document.createElement('img');
+				img.className = 'upload_img mt-2';
+				img.setAttribute('alt', file.name);
+				img.src = reader.result;
+				dataRefs.gallery.appendChild(img);
+			}
+		}
+  	}
 }
 
   // Based on: https://flaviocopes.com/how-to-upload-files-fetch/
@@ -603,7 +603,6 @@
 
     const formData = new FormData();
     formData.append(name, dataRefs.files);
-
     fetch(url, {
       method: 'POST',
       body: formData
@@ -637,7 +636,7 @@
 		}
 		else
 		{
-        console.log('Not an image, ', item.type);
+        	console.log('Not an image, ', item.type);
 		}
        
       }
@@ -646,7 +645,6 @@
 
     if (!files.length) return;
     dataRefs.files = files;
-
     previewFiles(dataRefs);
     imageUpload(dataRefs);
   }
