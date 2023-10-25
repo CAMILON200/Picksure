@@ -142,6 +142,13 @@
                                 @else
                                     {{ $dataTypeContent->{$row->field} }}
                                 @endif
+                            @elseif($row->type == 'text')
+                                @if ($row->field == 'img_url')
+                                    <img src="@if( !filter_var($dataTypeContent->{$row->field}, FILTER_VALIDATE_URL)){{ Voyager::image( $dataTypeContent->{$row->field} ) }}@else{{ $dataTypeContent->{$row->field} }}@endif" style="width:100px">
+                                @else
+                                    @include('voyager::multilingual.input-hidden-bread-browse')
+                                    <div>{{ mb_strlen( $dataTypeContent->{$row->field} ) > 200 ? mb_substr($dataTypeContent->{$row->field}, 0, 200) . ' ...' : $dataTypeContent->{$row->field} }}</div>
+                                @endif
                             @else
                                 @include('voyager::multilingual.input-hidden-bread-read')
                                 <p>{{ $dataTypeContent->{$row->field} }}</p>
