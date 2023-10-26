@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('UTC');
 namespace App\Http\Controllers\Voyager;
 
 use Exception;
@@ -17,6 +17,7 @@ use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 
 use App\Models\Language;
+use App\Models\Parameters;
 use App\Models\Imageproduct;
 use App\Models\TextsImageproducts;
 use App\Models\ImageproductsCategory;
@@ -30,6 +31,19 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 
 	public $title, $description, $lang;
 	public $itemTexts = [];
+	public $max_weight_image = '3000';
+
+	public function __construct()
+	{
+		$this->weightImageParameter();
+	}
+
+	private function weightImageParameter() 
+	{
+		$parameter = Parameters::where('name_parameter', 'max_weight_image')->first();
+		$this->max_weight_image = $parameter->value_parameter;
+	}
+
 	//***************************************
 	//               ____
 	//              |  _ \
@@ -496,7 +510,9 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 			$categories = Category::all();
 			$itemTexts = $this->itemTexts;
 
-			return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'languages', 'categories', 'itemTexts', 'url_bulck_load'));
+			$size_img = $this->max_weight_image;
+
+			return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'languages', 'categories', 'itemTexts', 'url_bulck_load','size_img'));
 	}
 
 	private function groupArray($array,$groupkey)
@@ -628,10 +644,12 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 			}
 		} else {
 			if ($request->hasFile('image_product')) {
+				
 				$request->validate([
-					'image_product' => 'required|image|max:20480', // Máximo 20 MB (20480 kilobytes)
+					'image_product' => 'required|image|max:'.$this->max_weight_image, // Máximo 20 MB (20480 kilobytes)
 				]);
 	
+			
 				$file = $request->file('image_product');
 	
 				$path = $file->store('imageproducts', 'public');
@@ -639,49 +657,50 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 				// Obtiene la URL completa de la imagen cargada
 				//$request['img_url'] = asset('storage/posts/' . $path);
 				$request['img_url'] = $path;
+				$request['created_at'] = date("Y-m-d H:i:s");
 			}
 			
-			$slug = $this->getSlug($request);
-	
-			$dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
-	
-			// Check permission
-			$this->authorize('add', app($dataType->model_name));
-			
-			// Validate fields with ajax
-			$val = $this->validateBread($request->all(), $dataType->addRows)->validate();
-			$data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
-	
-			event(new BreadDataAdded($dataType, $data));
-	
-			$input = $request->all();
-			$items = $this->addTexts($data->id, $input);
-	
-			$itemCategory = $request['category'];
-			if(count($itemCategory) > 0){
-				foreach ($itemCategory as $key => $value) {
-					$texts = ImageproductsCategory::create([
-						'imageproduct_id' => $data->id,
-						'category_id' => $value,
-					]);
-				} 	
-				DB::commit();
-			}
-			
-			if (!$request->has('_tagging')) {
-				if (auth()->user()->can('browse', $data)) {
-					$redirect = redirect()->route("voyager.{$dataType->slug}.index");
-				} else {
-					$redirect = redirect()->back();
+				$slug = $this->getSlug($request);
+		
+				$dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+		
+				// Check permission
+				$this->authorize('add', app($dataType->model_name));
+				
+				// Validate fields with ajax
+				$val = $this->validateBread($request->all(), $dataType->addRows)->validate();
+				$data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
+		
+				event(new BreadDataAdded($dataType, $data));
+		
+				$input = $request->all();
+				$items = $this->addTexts($data->id, $input);
+		
+				$itemCategory = $request['category'];
+				if(count($itemCategory) > 0){
+					foreach ($itemCategory as $key => $value) {
+						$texts = ImageproductsCategory::create([
+							'imageproduct_id' => $data->id,
+							'category_id' => $value,
+						]);
+					} 	
+					DB::commit();
 				}
-	
-				return $redirect->with([
-					'message'    => __('voyager::generic.successfully_added_new')." {$dataType->getTranslatedAttribute('display_name_singular')}",
-					'alert-type' => 'success',
-				]);
-			} else {
-				return response()->json(['success' => true, 'data' => $data]);
-			}
+				
+				if (!$request->has('_tagging')) {
+					if (auth()->user()->can('browse', $data)) {
+						$redirect = redirect()->route("voyager.{$dataType->slug}.index");
+					} else {
+						$redirect = redirect()->back();
+					}
+		
+					return $redirect->with([
+						'message'    => __('voyager::generic.successfully_added_new')." {$dataType->getTranslatedAttribute('display_name_singular')}",
+						'alert-type' => 'success',
+					]);
+				} else {
+					return response()->json(['success' => true, 'data' => $data]);
+				}
 		}
 	
 		

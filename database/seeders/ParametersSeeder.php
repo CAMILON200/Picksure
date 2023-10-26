@@ -22,6 +22,11 @@ class ParametersSeeder extends Seeder
                 'name_parameter'         => 'max_upload_images',
                 'value_parameter'        => '5',
             ]);
+            
+            Parameters::create([
+                'name_parameter'         => 'max_weight_image',
+                'value_parameter'        => '2000',
+            ]);
 
             Parameters::create([
                 'name_parameter'         => 'max_images_per_pauta',
