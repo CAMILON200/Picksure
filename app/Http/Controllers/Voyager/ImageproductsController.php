@@ -1,5 +1,4 @@
 <?php
-date_default_timezone_set('UTC');
 namespace App\Http\Controllers\Voyager;
 
 use Exception;
@@ -25,6 +24,8 @@ use App\Models\ImagesPautas;
 use TCG\Voyager\Models\Category;
 use Livewire\Component;
 
+
+date_default_timezone_set('UTC');
 class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 {
 	use BreadRelationshipParser;
@@ -389,11 +390,13 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 			->select('parameters.value_parameter')
 			->where('parameters.name_parameter', '=', 'url_drive_bulck_load')
 			->first();
+
+			$size_img = $this->max_weight_image;
 			
 			$url_bulck_load = $parameterUrl->value_parameter;
 			$itemTexts = $texts;
 
-			return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'languages', 'categories', 'itemTexts', 'url_bulck_load'));
+			return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'languages', 'categories', 'itemTexts', 'url_bulck_load', 'size_img'));
 	}
 
 	// POST BR(E)AD
@@ -430,7 +433,7 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 					});
 			$original_data = clone($data);
 
-			$this->insertUpdateData($request, $slug, $dataType->editRows, $data);
+			//$this->insertUpdateData($request, $slug, $dataType->editRows, $data);
 
 			// Delete Images
 			$this->deleteBreadImages($original_data, $to_remove);

@@ -119,41 +119,44 @@
 									Subir Imagenes por CSV
 								</label>
 							</div>
+							
+							<fieldset id="img-content" class="upload_dropZone text-center mb-3 p-4">
+	
+	
+								<div class="icon voyager-upload upload_svg"></div>
+	
+								<p class="small my-2">Arrastre y suelte la(s) imagen(es) de fondo dentro de la región punteada<br><i>ó</i></p>
+	
+								<input name="image_product" id="image_product" data-post-name="image_background"  class="position-absolute invisible" type="file" accept="image/jpeg, image/png, image/svg+xml" />
+	
+								<label class="btn btn-primary mb-3" for="image_product">Seleccionar archivo(s)</label>
+	
+								<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
+	
+							</fieldset>
+	
+							<fieldset id="upload_csv" class="upload_dropZone text-center mb-3 p-4" style="display:none;">
+	
+								<div class="icon voyager-upload upload_svg"></div>
+								
+								<p class="small my-2"></p>
+								
+								<input name="image_product_2" id="image_product_2" data-post-name="image_background"  class="position-absolute invisible" type="file" accept=".csv" />
+								
+								<label class="btn btn-primary mb-3" for="image_product_2">Seleccionar archivo(s)</label>
+								
+								</br>
+								
+								<a href="{{$url_bulck_load}}" target="_blank" type="button">Descargar Plantilla CSV</a>
+								<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
+	
+							</fieldset>
+						@else
+							<div style="display:flex; justify-content: center">
+								<img class="" style="max-width: 20%;" src="{{ filter_var($dataTypeContent->img_url, FILTER_VALIDATE_URL) ? $dataTypeContent->img_url : Voyager::image($dataTypeContent->img_url) }}">
+							</div>
 						@endif
 
-						<fieldset id="img-content" class="upload_dropZone text-center mb-3 p-4">
-
-
-							<div class="icon voyager-upload upload_svg"></div>
-
-							<p class="small my-2">Arrastre y suelte la(s) imagen(es) de fondo dentro de la región punteada<br><i>ó</i></p>
-
-							<input name="image_product" id="image_product" data-post-name="image_background"  class="position-absolute invisible" type="file" accept="image/jpeg, image/png, image/svg+xml" />
-
-							<label class="btn btn-primary mb-3" for="image_product">Seleccionar archivo(s)</label>
-
-							<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
-
-						</fieldset>
-
-						<fieldset id="upload_csv" class="upload_dropZone text-center mb-3 p-4" style="display:none;">
-
-                        
-						
-						<div class="icon voyager-upload upload_svg"></div>
-						
-						<p class="small my-2"></p>
-						
-						<input name="image_product_2" id="image_product_2" data-post-name="image_background"  class="position-absolute invisible" type="file" accept=".csv" />
-						
-						<label class="btn btn-primary mb-3" for="image_product_2">Seleccionar archivo(s)</label>
-						
-						</br>
-						
-						<a href="{{$url_bulck_load}}" target="_blank" type="button">Descargar Plantilla CSV</a>
-						<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
-
-						</fieldset>
 
 						<div class="form-group">
 							<div id="url-content" class="col-md-12" style="display: none;">
