@@ -6,6 +6,7 @@ use App\Models\Imageproduct;
 use App\Models\Language;
 use App\Models\TextsImageproducts;
 use App\Models\ImageproductsCategory;
+use App\Models\Parameters;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
@@ -18,10 +19,13 @@ use function PHPUnit\Framework\isEmpty;
 class ImageproductsController extends Controller
 {
   public $arrayRoles;
+  public $max_weight_image;
  
   public function __construct()
   {
       $this->arrayRoles = ['admin', 'superadmin'];
+      $this->weightImageParameter();
+      
   }
   //private $arrayRoles = ['admin', 'superadmin'];
   /**
@@ -67,100 +71,130 @@ class ImageproductsController extends Controller
      *    )
      *  )
      * )
-     */
-		public function index(Request $request, $language, $limit, $offset)
-    {  	
-      if($language){
-        $getRoles = DB::table('users')
-        ->join('roles', 'roles.id', '=', 'users.role_id')
-        ->whereIn('roles.name', $this->arrayRoles)
-        ->select('users.id')
-        ->get()
-        ->toArray();
+  */
+  public function index(Request $request, $language, $limit, $offset)
+  {  	
+    if($language){
+      $getRoles = DB::table('users')
+      ->join('roles', 'roles.id', '=', 'users.role_id')
+      ->whereIn('roles.name', $this->arrayRoles)
+      ->select('users.id')
+      ->get()
+      ->toArray();
 
-        $usersId = array_column($getRoles,'id');
-        $image = DB::table('imageproducts')
-        ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
-        ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description' )
-        ->where('texts_imageproducts.language', '=', $language)
-        ->where('imageproducts.status', '=', 1)
-        ->where('imageproducts.is_public', '=', 1)
-        ->whereIn('imageproducts.user_id', $usersId)
-        ->orderBy('imageproducts.created_at', 'DESC')
-        ->offset($offset)->limit($limit)
+      $usersId = array_column($getRoles,'id');
+      $image = DB::table('imageproducts')
+      ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
+      ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description' )
+      ->where('texts_imageproducts.language', '=', $language)
+      ->where('imageproducts.status', '=', 1)
+      ->where('imageproducts.is_public', '=', 1)
+      ->whereIn('imageproducts.user_id', $usersId)
+      ->orderBy('imageproducts.created_at', 'DESC')
+      ->offset($offset)->limit($limit)
+      ->get();
+      $response['status'] = 200;
+      $response['data'] = $image; 
+    }	else {
+      $response['status'] = 402;
+      $response['data'] = 'Lenguaje no encontrado.';
+    }
+    return response()->json($response, $response['status']);
+  } 
+
+  /**
+   * @OA\Get(
+   *  tags={"Imagenes"},
+   *  summary="Devuelve todas las imagenes filtrando el lenguaje",
+   *  description="Retorna un Json con los titulos de las imagenes filtradas por lenguaje",
+   *  path="/api/v1/imageproducts/{language}",
+   *  security={{ "bearerAuth": {} }},
+   *  @OA\Parameter(
+   *    name="language",
+   *    in="path",
+   *    description="Prefijo del Idioma",
+   *    required=true,
+   *    @OA\Schema(
+   *      default="ES",
+   *      type="string",
+   *    )
+   *  ),
+   *  @OA\Parameter(
+   *    name="offset",
+   *    in="query",
+   *    description="offset o Limit de datos",
+   *    @OA\Schema(
+   *      default="0",
+   *      type="integer",
+   *    )
+   *  ),
+   *  @OA\Response(
+   *    response=200,
+   *    description="Resultado de la Operación",
+   *    @OA\JsonContent(
+   *       @OA\Property(property="status", type="integer", example="200"),
+   *       @OA\Property(property="title de la imagen", type="varchar", example="String")
+   *    )
+   *  ),
+   *  @OA\Response(
+   *    response=422,
+   *    description="Estado Invalido de la Operación",
+   *    @OA\JsonContent(
+   *       @OA\Property(property="message", type="string", example="Lenguaje no existe."),
+   *       @OA\Property(property="errors", type="string", example="..."),
+   *    )
+   *  )
+   * )
+   */
+  public function imagesForUser (Request $request, $language, $user_id)
+  {  	
+    if($language){
+      $image = DB::table('imageproducts')
+      ->leftJoin('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
+      ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description')
+      ->where('imageproducts.user_id','=', $user_id)
+      ->where('imageproducts.status','=', 1)
+      ->groupBy('imageproducts.id')
+      ->get();
+      $response['status'] = 200;
+      $response['data'] = $image; 
+    }	else {
+      $response['status'] = 402;
+      $response['data'] = 'Lenguaje no encontrado.';
+    }
+    return response()->json($response, $response['status']);
+  } 
+  public function imagesForId (Request $request, $id, $language)
+  {  	
+      $image = DB::table('imageproducts')
+      ->select('imageproducts.id', 'imageproducts.img_url')
+      ->where('imageproducts.id','=', $id)
+      ->first();
+
+      $resultado = $image;
+
+      if($image) {
+        $resultado->texts_imageproducts = DB::table('texts_imageproducts')
+        ->select('texts_imageproducts.title', 'texts_imageproducts.description', 'texts_imageproducts.language')
+        ->where('texts_imageproducts.imageproduct_id','=', $id)
         ->get();
+        
+        $resultado->imageproducts_category = DB::table('imageproducts_category')
+        ->join('texts_categories', 'texts_categories.category_id', '=', 'imageproducts_category.category_id')
+        ->select('imageproducts_category.category_id as value', 'texts_categories.name as label')
+        ->where('imageproducts_category.imageproduct_id','=', $id)
+        ->where('texts_categories.language','=', $language)
+        ->get();
+      
         $response['status'] = 200;
-        $response['data'] = $image; 
+        $response['data'] = $resultado; 
       }	else {
         $response['status'] = 402;
-        $response['data'] = 'Lenguaje no encontrado.';
+        $response['data'] = 'Imagen no encontrada.';
       }
-      return response()->json($response, $response['status']);
-    } 
-
-    /**
-     * @OA\Get(
-     *  tags={"Imagenes"},
-     *  summary="Devuelve todas las imagenes filtrando el lenguaje",
-     *  description="Retorna un Json con los titulos de las imagenes filtradas por lenguaje",
-     *  path="/api/v1/imageproducts/{language}",
-     *  security={{ "bearerAuth": {} }},
-     *  @OA\Parameter(
-     *    name="language",
-     *    in="path",
-     *    description="Prefijo del Idioma",
-     *    required=true,
-     *    @OA\Schema(
-     *      default="ES",
-     *      type="string",
-     *    )
-     *  ),
-     *  @OA\Parameter(
-     *    name="offset",
-     *    in="query",
-     *    description="offset o Limit de datos",
-     *    @OA\Schema(
-     *      default="0",
-     *      type="integer",
-     *    )
-     *  ),
-     *  @OA\Response(
-     *    response=200,
-     *    description="Resultado de la Operación",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="status", type="integer", example="200"),
-     *       @OA\Property(property="title de la imagen", type="varchar", example="String")
-     *    )
-     *  ),
-     *  @OA\Response(
-     *    response=422,
-     *    description="Estado Invalido de la Operación",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="Lenguaje no existe."),
-     *       @OA\Property(property="errors", type="string", example="..."),
-     *    )
-     *  )
-     * )
-     */
-		public function imagesForUser (Request $request, $language, $user_id)
-    {  	
-      if($language){
-        $image = DB::table('imageproducts')
-        ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
-        ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description')
-        ->where('texts_imageproducts.language', '=', $language)
-        ->where('imageproducts.user_id','=', $user_id)
-        ->where('imageproducts.status','=', 1)
-        ->get();
-        $response['status'] = 200;
-        $response['data'] = $image; 
-      }	else {
-        $response['status'] = 402;
-        $response['data'] = 'Lenguaje no encontrado.';
-      }
-      return response()->json($response, $response['status']);
-    } 
-   /**
+    return response()->json($response, $response['status']);
+  } 
+  /**
      *  @OA\Get(
      *  tags={"Imagenes"},
      *  summary="Devuelve la imagen por el id",
@@ -317,6 +351,11 @@ class ImageproductsController extends Controller
       return response()->json($response, $response['status']);
   }
 
+  private function weightImageParameter() 
+  {
+    $parameter = Parameters::where('name_parameter', 'max_weight_image')->first();
+    $this->max_weight_image = $parameter->value_parameter;
+  }
   /**
    * @OA\Get(
    *  tags={"Imagenes"},
@@ -482,7 +521,7 @@ class ImageproductsController extends Controller
     if ($request->hasFile('img_url')) {
       
       $request->validate([
-        'img_url' => 'required|image|max:20000', // Máximo 20 MB (20480 kilobytes)
+        'img_url' => 'required|image|max:'.$this->max_weight_image, // Máximo {parameter} in MB (20480 kilobytes)
       ]);
 
       $file = $request->file('img_url');
@@ -496,6 +535,50 @@ class ImageproductsController extends Controller
     
     $result_image = $image->id;
     
+    $itemProducts = $request['text_products'];
+    $itemProductsARR = json_decode($itemProducts, true);
+    if(count($itemProductsARR) > 0){
+      foreach ($itemProductsARR as $key => $value) {
+        $texts = TextsImageproducts::create([
+          'title' => $value["title"],
+          'description' => $value["description"],
+          'imageproduct_id' => $result_image,
+          'language' => $value["language"],
+        ]);
+      } 	
+      DB::commit();
+    }
+
+    $itemCategory = $request['categories'];
+    $itemCategoryARR = json_decode($itemCategory, true);
+    if(count($itemCategoryARR) > 0){
+      foreach ($itemCategoryARR as $key => $value) {
+        $texts = ImageproductsCategory::create([
+          'imageproduct_id' => $result_image,
+          'category_id' => $value,
+        ]);
+      } 	
+      DB::commit();
+    }
+
+    $imageAdd = DB::table('imageproducts')
+      ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
+      ->leftJoin('images_pautas', 'imageproducts.id', '=', 'images_pautas.imageproducts_id')
+      ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description', 'images_pautas.id as id_pautas')
+      ->where('texts_imageproducts.language', '=', $request["language"])
+      ->where('imageproducts.user_id', '=', $request["user_id"])
+      ->where('imageproducts.id', '=', $result_image)
+      ->get();
+
+    return response()->json(['success' => true, 'data' => $imageAdd]);
+  }
+
+  public function updateImageProducts(Request $request){
+    $result_image = $request['id_imageproducts'];
+
+    TextsImageproducts::where('imageproduct_id', $result_image)->delete();
+    ImageproductsCategory::where('imageproduct_id', $result_image)->delete();
+
     $itemProducts = $request['text_products'];
     $itemProductsARR = json_decode($itemProducts, true);
     if(count($itemProductsARR) > 0){

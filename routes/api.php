@@ -81,6 +81,7 @@ Route::get('/locations', [LocationsController::class, 'index']);
 Route::post('/imageproducts_carga_masiva', [ImageproductsController::class, 'uploadFile']);
 Route::get('/imageproducts/create_folder/{id}', [ImageproductsController::class, 'createDirectory']);
 Route::post('/imageproducts/add', [ImageproductsController::class, 'addImageProducts']);
+Route::post('/imageproducts_update', [ImageproductsController::class, 'updateImageProducts']);
 Route::get('/imageproducts/user/{language}/{user_id}', [ImageproductsController::class, 'imagesForUser']);
 Route::get('/imageproducts/{language}/{limit}/{offset}', [ImageproductsController::class, 'index']);
 Route::get('/imageproducts/{language}/{image_id}', [ImageproductsController::class, 'showOne']); 
@@ -88,6 +89,7 @@ Route::get('/imageproducts_category/{language}/{category_id}', [ImageproductsCon
 Route::get('/imageproducts/filter/search/{language}', [ImageproductsController::class, 'search']);
 Route::post('/imageproducts_searchimage/{language}/{limit}/{offset}', [ImageproductsController::class, 'search']);
 Route::get('/imageproducts_delete/{id}', [ImageproductsController::class, 'deleteImageProducts']);
+Route::get('/imageproducts_id/{id}/{language}', [ImageproductsController::class, 'imagesForId']);
 
 //Pautas
 Route::get('/pautasusers/{location}/{category_id}', [PautasUsersController::class, 'pautaForCategory']);
