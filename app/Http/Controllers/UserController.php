@@ -675,7 +675,7 @@ class UserController extends Controller
         pu.user_id , u.avatar , CONCAT(u.name,' ',u.last_name) as name, pu.start_date, pu.end_date, pu.valor 
         FROM pautas_users pu 
         INNER JOIN users u ON u.id = pu.user_id
-        WHERE pu.user_id = $user_id", []);
+        WHERE pu.user_id = $user_id ORDER BY pu.created_at DESC", []);
 
         $likeCategory = $this->showLikeCategory($user_id, 'ES');
         $likeImageproduct = $this->showLikeImageproduct($user_id, 'ES');

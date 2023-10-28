@@ -155,6 +155,7 @@ class ImageproductsController extends Controller
       ->where('imageproducts.user_id','=', $user_id)
       ->where('imageproducts.status','=', 1)
       ->groupBy('imageproducts.id')
+      ->orderBy('imageproducts.id','desc')
       ->get();
       $response['status'] = 200;
       $response['data'] = $image; 
