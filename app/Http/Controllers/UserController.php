@@ -714,4 +714,14 @@ class UserController extends Controller
     }
 
   }
+
+  public function VerifyEmail(Request $request) {
+    $response['status'] = Response::HTTP_OK;
+    if (User::where('email', $request->email)->exists()) {
+      $response['exist'] = true;
+    } else {
+      $response['exist'] = false;
+    }
+    return response()->json($response, $response['status']);
+  }
 }

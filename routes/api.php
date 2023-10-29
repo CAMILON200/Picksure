@@ -51,6 +51,7 @@ Route::post('/user/pay_suscription', [UserController::class, 'PaySuscription']);
 Route::delete('/user/delete_users/{user_id}', [UserController::class, 'DeleteUser']);
 Route::put('/user/update_users/{user_id}', [UserController::class, 'UpdateUser']);
 Route::get('/user/show_users/{user_id}', [UserController::class, 'ShowInfoUser']);
+Route::post('/user/verify_email', [UserController::class, 'VerifyEmail']);
 
 //GiftVoucher
 Route::get('/giftvoucher/{code}/{type}', [GiftVoucherContoller::class, 'read']);

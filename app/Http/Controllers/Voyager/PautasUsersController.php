@@ -272,7 +272,7 @@ class PautasUsersController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 			
 			$images_pautas = DB::table('images_pautas')
 			->join('imageproducts', 'imageproducts.id', '=', 'images_pautas.imageproducts_id')
-			->select('imageproducts.img_url')
+			->select('imageproducts.img_url','imageproducts.id')
 			->where('images_pautas.pautasuser_id', '=', $id)
 			->get();
 			// If a column has a relationship associated with it, we do not want to show that field

@@ -55,8 +55,10 @@
                        
                             <div class="panel-body" style="padding-top:0;">
                                 @if($row->type == "image")
-                                    <img class="img-responsive"
-                                        src="{{ filter_var($dataTypeContent->{$row->field}, FILTER_VALIDATE_URL) ? $dataTypeContent->{$row->field} : Voyager::image($dataTypeContent->{$row->field}) }}">
+                                    <a href="/admin/imageproducts/{{$images_pautas[0]->id}}">
+                                        <img class="img-responsive"
+                                            src="{{ filter_var($dataTypeContent->{$row->field}, FILTER_VALIDATE_URL) ? $dataTypeContent->{$row->field} : Voyager::image($dataTypeContent->{$row->field}) }}">
+                                    </a>
                                 @elseif($row->type == 'relationship')
                                     @include('voyager::formfields.relationship', ['view' => 'read', 'options' => $row->details])
                                 @elseif($row->type == 'number')
@@ -142,7 +144,9 @@
                             <div class="panel-body" style="padding-top:0;">
                                 @foreach($images_pautas as $file)
                                     <div class="col-md-4">
-                                        <img class="img-responsive" src="{{ filter_var($file->img_url, FILTER_VALIDATE_URL) ? $file->img_url : Voyager::image($file->img_url) }}">
+                                        <a href="/admin/imageproducts/{{$file->id}}">
+                                            <img class="img-responsive" src="{{ filter_var($file->img_url, FILTER_VALIDATE_URL) ? $file->img_url : Voyager::image($file->img_url) }}">
+                                        </a>
                                     </div>
                                 @endforeach
                             </div>
