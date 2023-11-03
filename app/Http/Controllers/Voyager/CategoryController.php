@@ -18,11 +18,24 @@ use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 
 use App\Models\Language;
 use App\Models\TextsCategory;
+use App\Models\Parameters;
 
 class CategoryController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 {
     use BreadRelationshipParser;
     public $itemTexts = [];
+    public $max_weight_image = '3000';
+
+    public function __construct()
+	{
+		$this->weightImageParameter();
+	}
+
+	private function weightImageParameter() 
+	{
+		$parameter = Parameters::where('name_parameter', 'max_weight_image')->first();
+		$this->max_weight_image = $parameter->value_parameter;
+	}
 
     //***************************************
     //               ____
@@ -355,6 +368,29 @@ class CategoryController extends \TCG\Voyager\Http\Controllers\VoyagerBaseContro
     // POST BR(E)AD
     public function update(Request $request, $id)
     {
+        if ($request->hasFile('image_category')) {
+				
+            $request->validate([
+                'image_category' => 'required|image|max:'.$this->max_weight_image, // Máximo 20 MB (20480 kilobytes)
+            ]);
+        
+            $file = $request->file('image_category');
+
+            $path = $file->store('categories', 'public');
+
+            // Obtiene la URL completa de la imagen cargada
+            //$request['img_url'] = asset('storage/posts/' . $path);
+            $request['img_url'] = $path;
+            $request['updated_at'] = date("Y-m-d H:i:s");
+        }else{
+            $slug = $this->getSlug($request);
+            $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+            $redirect = redirect()->back();
+            return $redirect->with([
+                'message'    => __('voyager::generic.field_does_not_exist'),
+                'alert-type' => 'error',
+            ]);
+        }
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -476,6 +512,30 @@ class CategoryController extends \TCG\Voyager\Http\Controllers\VoyagerBaseContro
      */
     public function store(Request $request)
     {
+        if ($request->hasFile('image_category')) {
+				
+            $request->validate([
+                'image_category' => 'required|image|max:'.$this->max_weight_image, // Máximo 20 MB (20480 kilobytes)
+            ]);
+        
+            $file = $request->file('image_category');
+
+            $path = $file->store('categories', 'public');
+
+            // Obtiene la URL completa de la imagen cargada
+            //$request['img_url'] = asset('storage/posts/' . $path);
+            $request['img_url'] = $path;
+            $request['created_at'] = date("Y-m-d H:i:s");
+        }else{
+            $slug = $this->getSlug($request);
+            $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+            $redirect = redirect()->back();
+            return $redirect->with([
+                'message'    => __('voyager::generic.field_does_not_exist'),
+                'alert-type' => 'error',
+            ]);
+        }
+
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();

@@ -661,6 +661,14 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 				//$request['img_url'] = asset('storage/posts/' . $path);
 				$request['img_url'] = $path;
 				$request['created_at'] = date("Y-m-d H:i:s");
+			}else{
+				$slug = $this->getSlug($request);
+				$dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+				$redirect = redirect()->back();
+				return $redirect->with([
+					'message'    => __('voyager::generic.field_does_not_exist'),
+					'alert-type' => 'error',
+				]);
 			}
 			
 				$slug = $this->getSlug($request);

@@ -8,7 +8,68 @@
 @section('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @stop
-
+<style>
+	:root {
+		--colorPrimaryNormal: #00b3bb;
+		--colorPrimaryDark: #00979f;
+		--colorPrimaryGlare: #00cdd7;
+		--colorPrimaryHalf: #000000;
+		--colorPrimaryQuarter: #bfecee;
+		--colorPrimaryEighth: #dff5f7;
+		--colorPrimaryPale: #f3f5f7;
+		--colorPrimarySeparator: #f3f5f7;
+		--colorPrimaryOutline: #dff5f7;
+		--colorButtonNormal: #00b3bb;
+		--colorButtonHover: #00cdd7;
+		--colorLinkNormal: #00979f;
+		--colorLinkHover: #00cdd7;
+	}
+	.upload_dropZone {
+		color: #0f3c4b;
+		background-color: var(--colorPrimaryPale, #c8dadf);
+		outline: 2px dashed var(--colorPrimaryHalf, #c1ddef);
+		outline-offset: -12px;
+		transition:
+			outline-offset 0.2s ease-out,
+			outline-color 0.3s ease-in-out,
+			background-color 0.2s ease-out;
+	}
+	.upload_dropZone.highlight {
+		outline-offset: -4px;
+		outline-color: var(--colorPrimaryNormal, #0576bd);
+		background-color: var(--colorPrimaryEighth, #c8dadf);
+	}
+	.upload_svg {
+		fill: var(--colorPrimaryNormal, #0576bd)!important;
+		vertical-align: middle;
+		display: contents!important;
+	}
+	.btn-upload {
+		color: #fff;
+		background-color: var(--colorPrimaryNormal);
+	}
+	.btn-upload:hover,
+	.btn-upload:focus {
+		color: #fff;
+		background-color: var(--colorPrimaryGlare);
+	}
+	.icon {
+		font-size: 40px;
+	}
+	.upload_img {
+		width: calc(33.333% - (2rem / 3));
+		object-fit: contain;
+	}
+	.position-absolute {
+		position: absolute!important;
+	}
+	.p-4 {
+		padding: 1.5rem!important;
+	}
+	.mb-3 {
+		margin-bottom: 1rem!important;
+	}
+</style>
 @section('page_title', __('voyager::generic.'.($edit ? 'edit' : 'add')).' '.$dataType->getTranslatedAttribute('display_name_singular'))
 
 @section('page_header')
@@ -48,6 +109,24 @@
                                     </ul>
                                 </div>
                             @endif
+                            
+							<fieldset id="img-content" class="upload_dropZone text-center mb-3 p-4">
+
+								<div class="icon voyager-upload upload_svg"></div>
+
+								<p class="small my-2">Arrastre y suelte la(s) imagen(es) de fondo dentro de la región punteada<br><i>ó</i></p>
+
+								<input name="image_category" id="image_category" data-post-name="image_background"  class="position-absolute invisible" type="file" accept="image/jpeg, image/png, image/svg+xml" />
+
+								<label class="btn btn-primary mb-3" for="image_category">Seleccionar archivo(s)</label>
+
+								<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
+								@if($edit)
+									<div class="image_gallery" style="display:flex; justify-content: center">
+										<img class="" style="max-width: 20%;" src="{{ filter_var($dataTypeContent->img_url, FILTER_VALIDATE_URL) ? $dataTypeContent->img_url : Voyager::image($dataTypeContent->img_url) }}">
+									</div>
+								@endif
+							</fieldset>
 
                             <!-- Adding / Editing -->
                             @php
@@ -285,37 +364,37 @@
             });
             $('[data-toggle="tooltip"]').tooltip();
         });
-				function addTextName(){
-					let name = $('#name-category').val()
-					let language = $('#lenguage option:selected')
-					$('#messsage-item').html('')
-					if(name == ''){
-						$('#messsage-item').html('Los campos son obligatorios')
-					}else {
-						if ($('#item-'+language.val()).length) {
-							$('#messsage-item').html('Ya existe un Item con el mismo idioma ' + language.text())
-						}else{
-							$('#columnItemText').append(`
-								<tr id="item-${language.val()}">												
-									<td>
-										${name}
-										<input type="hidden" name="nametext[]" value="${name}" />
-									</td>
-									<td>
-										<input type="hidden" name="language[]" value="${language.val()}" />
-										${language.text()}
-									</td>
-									<td> 
-										<button type="button" class="btn btn-danger btn-sm" onclick="deleteItem(${language.val()})">-</button>
-									</td>
-								</tr>
-							`)
-							$('#name-category').val('')
-						}
-					}
-				}
+        function addTextName(){
+            let name = $('#name-category').val()
+            let language = $('#lenguage option:selected')
+            $('#messsage-item').html('')
+            if(name == ''){
+                $('#messsage-item').html('Los campos son obligatorios')
+            }else {
+                if ($('#item-'+language.val()).length) {
+                    $('#messsage-item').html('Ya existe un Item con el mismo idioma ' + language.text())
+                }else{
+                    $('#columnItemText').append(`
+                        <tr id="item-${language.val()}">												
+                            <td>
+                                ${name}
+                                <input type="hidden" name="nametext[]" value="${name}" />
+                            </td>
+                            <td>
+                                <input type="hidden" name="language[]" value="${language.val()}" />
+                                ${language.text()}
+                            </td>
+                            <td> 
+                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteItem(${language.val()})">-</button>
+                            </td>
+                        </tr>
+                    `)
+                    $('#name-category').val('')
+                }
+            }
+        }
 
-                function addCategoryLanguage(){
+        function addCategoryLanguage(){
 			let title = $('#title').val()
 			let language = $('#language option:selected')
             console.log(language.val())
@@ -350,9 +429,179 @@
 			}
 		}
 
-				function deleteItem(id){
-					
-                    $('#item-'+id).remove();
+        function deleteItem(id){
+            
+            $('#item-'+id).remove();
+        }
+
+        // Drag and drop - single or multiple image files
+		// https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
+		// https://codepen.io/joezimjs/pen/yPWQbd?editors=1000
+		(function () {
+			console.log("llegooooo")
+			'use strict';
+		
+			// Four objects of interest: drop zones, input elements, gallery elements, and the files.
+			// dataRefs = {files: [image files], input: element ref, gallery: element ref}
+
+			const preventDefaults = event => {
+				event.preventDefault();
+				event.stopPropagation();
+			};
+
+			const highlight = event =>
+				event.target.classList.add('highlight');
+			
+			const unhighlight = event =>
+				event.target.classList.remove('highlight');
+
+			const getInputAndGalleryRefs = element => {
+				const zone = element.closest('.upload_dropZone') || false;
+				const gallery = zone.querySelector('.upload_gallery') || false;
+				const input = zone.querySelector('input[type="file"]') || false;
+				return {input: input, gallery: gallery};
+			}
+
+			const handleDrop = event => {
+				const dataRefs = getInputAndGalleryRefs(event.target);
+				dataRefs.files = event.dataTransfer.files;
+				handleFiles(dataRefs);
+			}
+
+
+			const eventHandlers = zone => {
+
+				const dataRefs = getInputAndGalleryRefs(zone);
+				if (!dataRefs.input) return;
+
+				// Prevent default drag behaviors
+				;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
+					zone.addEventListener(event, preventDefaults, false);
+					document.body.addEventListener(event, preventDefaults, false);
+				});
+
+				// Highlighting drop area when item is dragged over it
+				;['dragenter', 'dragover'].forEach(event => {
+					zone.addEventListener(event, highlight, false);
+				});
+				;['dragleave', 'drop'].forEach(event => {
+					zone.addEventListener(event, unhighlight, false);
+				});
+
+				// Handle dropped files
+				zone.addEventListener('drop', handleDrop, false);
+
+				// Handle browse selected files
+				dataRefs.input.addEventListener('change', event => {
+					dataRefs.files = event.target.files;
+					handleFiles(dataRefs);
+				}, false);
+
+			}
+
+
+			// Initialise ALL dropzones
+			const dropZones = document.querySelectorAll('.upload_dropZone');
+			for (const zone of dropZones) {
+				eventHandlers(zone);
+			}
+
+
+			// No 'image/gif' or PDF or webp allowed here, but it's up to your use case.
+			// Double checks the input "accept" attribute
+			const isImageFile = file => ['image/jpeg', 'image/png', 'image/svg+xml'].includes(file.type);
+
+			const isCSVFile = file => ['text/csv'].includes(file.type);
+
+			function previewFiles(dataRefs) {
+				
+				if (!dataRefs.gallery) return;
+
+				if(dataRefs.files[0].type==="text/csv")
+				{
+					let text = document.createElement('p');
+					text.className = 'mt-2';
+					let oText = document.createTextNode(dataRefs.files[0].name);
+					text.appendChild(oText);
+					dataRefs.gallery.appendChild(text);
 				}
+				else{
+					for (const file of dataRefs.files) {
+						let reader = new FileReader();
+						reader.readAsDataURL(file);
+						$(".image_gallery").css('display', 'none')
+						reader.onloadend = function() {
+							let img = document.createElement('img');
+							img.className = 'upload_img mt-2';
+							img.setAttribute('alt', file.name);
+							img.src = reader.result;
+							dataRefs.gallery.appendChild(img);
+						}
+					}
+				}
+			}
+
+			// Based on: https://flaviocopes.com/how-to-upload-files-fetch/
+			const imageUpload = dataRefs => {
+
+				// Multiple source routes, so double check validity
+				if (!dataRefs.files || !dataRefs.input) return;
+
+				const url = dataRefs.input.getAttribute('data-post-url');
+				if (!url) return;
+
+				const name = dataRefs.input.getAttribute('data-post-name');
+				if (!name) return;
+
+				const formData = new FormData();
+				formData.append(name, dataRefs.files);
+				fetch(url, {
+				method: 'POST',
+				body: formData
+				})
+				.then(response => response.json())
+				.then(data => {
+				console.log('posted: ', data);
+				if (data.success === true) {
+					previewFiles(dataRefs);
+				} else {
+					console.log('URL: ', url, '  name: ', name)
+				}
+				})
+				.catch(error => {
+				console.error('errored: ', error);
+				});
+			}
+
+
+			// Handle both selected and dropped files
+			const handleFiles = dataRefs => {
+
+				let files = [...dataRefs.files];
+
+				// Remove unaccepted file types
+				files = files.filter(item => {
+					if (!isImageFile(item)) {
+						if(item.type === 'text/csv') return isCSVFile(item) ? item: null;
+						else console.log('Not an image, ', item.type);
+					}
+					return isImageFile(item) ? item : null;
+				});
+
+				if (!files.length) return;
+				let maxSize = $("#size_img").val()
+				let weightImg = Math.round(dataRefs.files[0].size / 1024);
+				if(weightImg > maxSize){
+					//this.files[0].size gets the size of your file and then you can validate accourdingly...
+					alert('No se puese cargar la imagen');
+					return false
+				}
+
+				dataRefs.files = files;
+				previewFiles(dataRefs);
+				imageUpload(dataRefs);
+			}
+
+		})();
     </script>
 @stop
