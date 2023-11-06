@@ -78,7 +78,6 @@
 </h1>
 @include('voyager::multilingual.language-selector')
 @stop
-
 @section('content')
 	<div class="page-content edit-add container-fluid">
 		<div class="row">
@@ -101,24 +100,26 @@
 					
 					<div class="panel-body">
 						@if(!$edit)
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="1" checked>
-								<label class="form-check-label" for="flexRadioDefault1">
-									Subir Imagen
-								</label>
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="2">
-								<label class="form-check-label" for="flexRadioDefault2">
-									Url de la Imagen
-								</label>
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" value="3">
-								<label class="form-check-label" for="flexRadioDefault3">
-									Subir Imagenes por CSV
-								</label>
-							</div>
+							@if(@Auth::user()->hasRole('superadmin'))
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="1" checked>
+									<label class="form-check-label" for="flexRadioDefault1">
+										Subir Imagen
+									</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="2">
+									<label class="form-check-label" for="flexRadioDefault2">
+										Url de la Imagen
+									</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" value="3">
+									<label class="form-check-label" for="flexRadioDefault3">
+										Subir Imagenes por CSV
+									</label>
+								</div>
+							@endif
 							
 							<fieldset id="img-content" class="upload_dropZone text-center mb-3 p-4">
 	
