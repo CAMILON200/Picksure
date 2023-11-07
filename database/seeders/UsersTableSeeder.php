@@ -34,7 +34,7 @@ class UsersTableSeeder extends Seeder
             ]);
 
             $role = Role::where('name', 'admin')->firstOrFail();
-            $locations = Locations::where('name', 'Cali')->firstOrFail();
+            $locations = Locations::where('name', 'Colombia')->firstOrFail();
 
             User::create([
                 'name'           => 'Admin',
