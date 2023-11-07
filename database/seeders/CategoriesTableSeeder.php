@@ -50,32 +50,6 @@ class CategoriesTableSeeder extends Seeder
             ])->save();
         }
 
-        $dataRow = $this->dataRow($categoryDataType, 'parent_id');
-        if (!$dataRow->exists) {
-            $dataRow->fill([
-                'type'         => 'select_dropdown',
-                'display_name' => __('voyager::seeders.data_rows.parent'),
-                'required'     => 0,
-                'browse'       => 0,
-                'read'         => 1,
-                'edit'         => 1,
-                'add'          => 1,
-                'delete'       => 1,
-                'details'      => [
-                    'default' => '',
-                    'null'    => '',
-                    'options' => [
-                        '' => '-- None --',
-                    ],
-                    'relationship' => [
-                        'key'   => 'id',
-                        'label' => 'name',
-                    ],
-                ],
-                'order' => 2,
-            ])->save();
-        }
-
         $dataRow = $this->dataRow($categoryDataType, 'order');
         if (!$dataRow->exists) {
             $dataRow->fill([
@@ -90,7 +64,7 @@ class CategoriesTableSeeder extends Seeder
                 'details'      => [
                     'default' => 1,
                 ],
-                'order' => 3,
+                'order' => 2,
             ])->save();
         }
 
@@ -105,7 +79,7 @@ class CategoriesTableSeeder extends Seeder
                 'edit'         => 1,
                 'add'          => 1,
                 'delete'       => 1,
-                'order'        => 4,
+                'order'        => 3,
             ])->save();
         }
 
@@ -125,7 +99,7 @@ class CategoriesTableSeeder extends Seeder
                         'origin' => 'name',
                     ],
                 ],
-                'order' => 5,
+                'order' => 4,
             ])->save();
         }
 
@@ -140,7 +114,7 @@ class CategoriesTableSeeder extends Seeder
                 'edit'         => 1,
                 'add'          => 1,
                 'delete'       => 1,
-                'order'        => 6,
+                'order'        => 5,
             ])->save();
         }
 
@@ -155,7 +129,7 @@ class CategoriesTableSeeder extends Seeder
                 'edit'         => 0,
                 'add'          => 0,
                 'delete'       => 0,
-                'order'        => 7,
+                'order'        => 6,
             ])->save();
         }
 
@@ -170,7 +144,7 @@ class CategoriesTableSeeder extends Seeder
                 'edit'         => 0,
                 'add'          => 0,
                 'delete'       => 0,
-                'order'        => 8,
+                'order'        => 7,
             ])->save();
         }
 
