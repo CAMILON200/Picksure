@@ -26,7 +26,7 @@ class UsersTableSeeder extends Seeder
                 'email'          => 'superadmin@admin.com',
                 'password'       => bcrypt('password'),
                 'remember_token' => Str::random(60),
-                'role_id'        => $role->id,
+                'role_id'        => $role_sa->id,
                 'last_name'      => 'Picksure',
                 'date_of_birth'  => '2023-05-29',
                 'phone'          => '213123',
