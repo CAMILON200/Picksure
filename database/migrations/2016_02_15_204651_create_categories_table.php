@@ -18,7 +18,7 @@ class CreateCategoriesTable extends Migration
             $table->integer('order')->default(1);
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('image_url');
+            $table->string('img_url');
             $table->timestamps();
         });
     }
