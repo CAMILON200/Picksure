@@ -15,15 +15,6 @@ class ImageProductsCategoryTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('imageproducts_category')->insert([
-            [
-                "imageproduct_id" => "1",
-                "category_id" => "1",
-            ],
-            [
-                "imageproduct_id" => "2",
-                "category_id" => "2",
-            ]
-        ]);
+        
     }
 }

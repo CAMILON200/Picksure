@@ -44,6 +44,11 @@ class ParametersSeeder extends Seeder
                 'name_parameter'         => 'price_per_images_pauta',
                 'value_parameter'        => '10000',
             ]);
+            Parameters::create([
+                'name_parameter'         => 'url_drive_bulck_load',
+                'value_parameter'        => 'https://docs.google.com/spreadsheets/d/1czF0fX6nXT8nUr6EOE8EtTjR7fi7mze4ROpsJ6YYqLw
+                ',
+            ]);
         }
     }
 }
