@@ -382,7 +382,8 @@ class CategoryController extends \TCG\Voyager\Http\Controllers\VoyagerBaseContro
             //$request['img_url'] = asset('storage/posts/' . $path);
             $request['img_url'] = $path;
             $request['updated_at'] = date("Y-m-d H:i:s");
-        }else{
+        }
+        /* else{
             $slug = $this->getSlug($request);
             $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
             $redirect = redirect()->back();
@@ -390,7 +391,7 @@ class CategoryController extends \TCG\Voyager\Http\Controllers\VoyagerBaseContro
                 'message'    => __('voyager::generic.field_does_not_exist'),
                 'alert-type' => 'error',
             ]);
-        }
+        } */
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();

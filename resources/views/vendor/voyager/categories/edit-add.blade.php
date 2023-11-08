@@ -234,7 +234,7 @@
 													</td>
 													
 													<td> 
-														<button type="button" class="btn btn-danger btn-sm" onclick="deleteItem({{ $value->language_id }})">-</button>
+														<button type="button" class="btn btn-danger btn-sm" onclick="deleteItem('{{ $value->language_id }}')">-</button>
 													</td>
 												</tr>
 											@endforeach
@@ -385,7 +385,7 @@
                                 ${language.text()}
                             </td>
                             <td> 
-                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteItem(${language.val()})">-</button>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteItem('${language.val()}')">-</button>
                             </td>
                         </tr>
                     `)
@@ -430,7 +430,6 @@
 		}
 
         function deleteItem(id){
-            
             $('#item-'+id).remove();
         }
 
