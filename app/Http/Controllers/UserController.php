@@ -255,7 +255,9 @@ class UserController extends Controller
         'category_id' => $category
       ]);
     }    
-    return response()->json($likeCategory, 200);
+    $getLikeCategory = $this->showLikeCategory($request->user_id, 'ES');
+    $response = ['status' => true, 'data' => $getLikeCategory ];
+    return response()->json($response, 200);
   }
 
 /**
@@ -573,9 +575,28 @@ class UserController extends Controller
     $payment_history->payment_reference = $request->payment_reference;
     $payment_history->amount = $request->amount;
     $payment_history->is_approved = $request->is_approved;
-    $payment_history->reference_payment = rand(100000, 999999);
+    $payment_history->reference_payment = $request->reference_code;
     $payment_history->date_payment = date("Y-m-d H:i:s");
     $payment_history->save();
+
+    $response["status"] = 200;
+    $response["message"] = 'Se actualizo correctamente';
+
+    return response()->json($response, $response['status']);
+  }
+
+  public function ConfirmSuscription(Request $request) {
+    /* $payHistoryFind = PaymentHistory::where('reference_payment', $request->reference_payment)->first();
+
+    $user = User::find($payHistoryFind->user_id);
+    $user->start_date_subscriber = $request->start_date_subscriber;
+    $user->end_date_subscriber = $request->end_date_subscriber;
+    $user->update();
+    */
+
+    $paymentHistory = PaymentHistory::find('reference_payment', $request->reference_payment);
+    $paymentHistory->state = $request->transactionState == 4 ? 1 : 0;
+    $paymentHistory->update();
 
     $response["status"] = 200;
     $response["message"] = 'Se actualizo correctamente';

@@ -48,6 +48,7 @@ Route::delete('/user/remove_like_imageproduct/{user_id}/{img_id}', [UserControll
 Route::post('/user/create_users', [UserController::class, 'CreateUser']);
 Route::post('/user/avatar_users', [UserController::class, 'AvatarUser']);
 Route::post('/user/pay_suscription', [UserController::class, 'PaySuscription']);
+Route::post('/user/confirm_suscription', [UserController::class, 'ConfirmSuscription']);
 Route::delete('/user/delete_users/{user_id}', [UserController::class, 'DeleteUser']);
 Route::put('/user/update_users/{user_id}', [UserController::class, 'UpdateUser']);
 Route::get('/user/show_users/{user_id}', [UserController::class, 'ShowInfoUser']);
