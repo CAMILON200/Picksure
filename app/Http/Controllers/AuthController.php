@@ -48,7 +48,10 @@ class AuthController extends Controller
   {    	
     $response = ['status' => 404, 'msg' => '' ];
     $data = json_decode($request->getContent());
-    $user = User::where('email', $data->email)->first();
+    $user = DB::table('users')
+    ->where('email', $data->email)  
+    ->where('status', 1)  
+    ->first();
     if($user){
       if(Hash::check($data->password, $user->password)){
         //$token = $user->createToken('example');

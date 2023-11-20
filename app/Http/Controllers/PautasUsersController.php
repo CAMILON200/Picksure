@@ -15,7 +15,12 @@ use Illuminate\Support\Facades\DB;
 
 class PautasUsersController extends Controller
 {
-
+  /**
+   * STATUS PAUTAS
+   * 1 = PENDIENTE
+   * 2 = APROBADO
+   * 0 = RECHAZADO
+   */
   /**
      * @OA\Get(
      *  tags={"Categorias"},
@@ -61,7 +66,7 @@ class PautasUsersController extends Controller
         INNER JOIN users u ON u.id = pu.user_id
         LEFT JOIN locations_pautas lp ON lp.pauta_id = pu.id
         WHERE CURRENT_DATE() BETWEEN pu.start_date
-        and pu.end_date and pu.status = 1 and lp.location_prefix = '$location'", []);
+        and pu.end_date and pu.status = 2 and lp.location_prefix = '$location'", []);
     }
       
     $response['status'] = 200;
@@ -136,7 +141,7 @@ class PautasUsersController extends Controller
     $pauta->description = $request->description_pauta;
     $pauta->destination_url = $request->destination_url;
     $pauta->img_url = $imgsData->img_url;
-    $pauta->status = 0;
+    $pauta->status = 1;
     $pauta->save();
     
     $result_id = $pauta->id;
@@ -179,7 +184,7 @@ class PautasUsersController extends Controller
     $payment_history->payment_reference = 'PAUTA';
     $payment_history->amount = $request->valor;
     $payment_history->is_approved = 1;
-    $payment_history->reference_payment = rand(100000, 999999);
+    $payment_history->reference_payment = $request->reference_payment;
     $payment_history->date_payment = date("Y-m-d H:i:s");
     $payment_history->save();
 

@@ -31,6 +31,7 @@ class UsersTableSeeder extends Seeder
                 'date_of_birth'  => '2023-05-29',
                 'phone'          => '213123',
                 'location'       => 'CO',
+                'status'         => 1,
             ]);
 
             $role = Role::where('name', 'admin')->firstOrFail();
@@ -46,6 +47,7 @@ class UsersTableSeeder extends Seeder
                 'date_of_birth'  => '2023-05-29',
                 'phone'          => '213123',
                 'location'       => 'CO',
+                'status'         => 1,
             ]);
         }
     }

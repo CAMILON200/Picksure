@@ -183,9 +183,11 @@
                                                         @if ($row->field == 'status')
                                                             <div id="content-state-{{$data->getKey()}}">
                                                                 @if ($data->{$row->field} == 1)
-                                                                    <span class="badge badge-success">Activo</span>
+                                                                    <span class="badge badge-warning">Pendiente</span>
+                                                                @elseif($data->{$row->field} == 2)
+                                                                    <span class="badge badge-success">Aprobado</span>
                                                                 @else
-                                                                    <span class="badge badge-danger">Inactivo</span>
+                                                                    <span class="badge badge-danger">Rechazado</span>
                                                                 @endif
                                                             </div>
                                                         @elseif ($row->field == 'is_public')
@@ -279,9 +281,12 @@
                                                     @if ($row->field == 'status')
                                                         <td id="action-status-{{$data->getKey()}}">
                                                             @if ($data->{$row->field} == 1)
-                                                                <a href="javascript:void(0)" onclick="setPauta({{$data->getKey()}},2)" class="badge badge-secondary"><i class="voyager-x"></i></a>
+                                                                <a href="javascript:void(0)" onclick="setPauta({{$data->getKey()}},2)" class="badge badge-primary" title="Aprobar Pauta"><i class="voyager-check"></i></a>
+                                                                <a href="javascript:void(0)" onclick="setPauta({{$data->getKey()}},0)" class="badge badge-secondary" title="Rechazar Pauta"><i class="voyager-x"></i></a>
+                                                            @elseif ($data->{$row->field} == 2)
+                                                                <a href="javascript:void(0)" onclick="setPauta({{$data->getKey()}},0)" class="badge badge-secondary" title="Rechazar Pauta"><i class="voyager-x"></i></a>
                                                             @else
-                                                                <a href="javascript:void(0)" onclick="setPauta({{$data->getKey()}},1)" class="badge badge-primary"><i class="voyager-check"></i></a>
+                                                                <a href="javascript:void(0)" onclick="setPauta({{$data->getKey()}},2)" class="badge badge-primary" title="Aprobar Pauta"><i class="voyager-check"></i></a>
                                                             @endif
                                                         </td>
                                                     @endif
@@ -404,13 +409,13 @@
                 });
                 const state_pauta = await response.json();
                 if(state_pauta.status == 200){
-                    let class_state_active = '<span class="badge badge-success">Activo</span>' 
-                    let class_state_inactive = '<span class="badge badge-danger">Inactivo</span>'
+                    let class_state_active = '<span class="badge badge-success">Aprobado</span>' 
+                    let class_state_inactive = '<span class="badge badge-danger">Rechazado</span>'
                     let class_state_update = state == 1 ? class_state_active : class_state_inactive
                     $('#content-state-'+id).html(class_state_update)
-                    let class_btn_active = '<a href="javascript:void(0)" onclick="setPauta('+id+',1)" class="badge badge-primary"><i class="voyager-check"></i></a>' 
-                    let class_btn_inactive = '<a href="javascript:void(0)" onclick="setPauta('+id+',2)" class="badge badge-secondary"><i class="voyager-x"></i></a>'
-                    let class_btn_update = state == 1 ? class_btn_inactive : class_btn_active   
+                    let class_btn_active = '<a href="javascript:void(0)" onclick="setPauta('+id+',2)" class="badge badge-primary" title="Aprobar Pauta"><i class="voyager-check"></i></a>' 
+                    let class_btn_inactive = '<a href="javascript:void(0)" onclick="setPauta('+id+',0)" class="badge badge-secondary" title="Rechazar Pauta"><i class="voyager-x"></i></a>'
+                    let class_btn_update = state == 2 ? class_btn_inactive : class_btn_active   
                     $('#action-status-'+id).html(class_btn_update)
 
                 }

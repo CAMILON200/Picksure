@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamps();
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
+            $table->string('reference_payment', 10);
             $table->integer('valor');
             $table->string('description');
             $table->string('destination_url');

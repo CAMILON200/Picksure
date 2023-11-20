@@ -46,8 +46,19 @@ class ParametersSeeder extends Seeder
             ]);
             Parameters::create([
                 'name_parameter'         => 'url_drive_bulck_load',
-                'value_parameter'        => 'https://docs.google.com/spreadsheets/d/1czF0fX6nXT8nUr6EOE8EtTjR7fi7mze4ROpsJ6YYqLw
-                ',
+                'value_parameter'        => 'https://docs.google.com/spreadsheets/d/1czF0fX6nXT8nUr6EOE8EtTjR7fi7mze4ROpsJ6YYqLw',
+            ]);
+            Parameters::create([
+                'name_parameter'         => 'suscription_one_month',
+                'value_parameter'        => '40000',
+            ]);
+            Parameters::create([
+                'name_parameter'         => 'suscription_three_month',
+                'value_parameter'        => '120000',
+            ]);
+            Parameters::create([
+                'name_parameter'         => 'suscription_twelve_month',
+                'value_parameter'        => '480000',
             ]);
         }
     }

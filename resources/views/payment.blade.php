@@ -100,7 +100,7 @@
             @endif
             <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
                 <div id="voyager-loader">
-                    <img id="image-loader" src="http://192.168.1.8:8000/admin/voyager-assets?path=images%2Flogo-icon.png" alt="Voyager Loader">
+                    <img id="image-loader" src="https://picksure.com/admin/voyager-assets?path=images%2Flogo-icon.png" alt="Voyager Loader">
                 </div>
                 <div class="flex justify-center mt-4 sm:items-center sm:justify-between">
                     <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">
@@ -132,7 +132,7 @@
                     <div class="text-center text-sm text-gray-500 sm:text-left"></div>
 
                     <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">
-                        Hecho por ZIEL - v1.1.0
+                        Developed by ZIEL - v1.1.7
                     </div>
                 </div>
 
@@ -264,15 +264,27 @@
         }
 
         async function saveProcessPay(data_body) {
-            const res_pay_suscription = await fetch(`/api/v1/user/pay_suscription`, {
-                method: 'POST', //Request Type
-                //body: formData, //post body
-                body: JSON.stringify(data_body),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            await res_pay_suscription.json();
+            if(data_body.type_pay == 'SUSCRIPTION') {
+                const res_pay_suscription = await fetch(`/api/v1/user/pay_suscription`, {
+                    method: 'POST', //Request Type
+                    //body: formData, //post body
+                    body: JSON.stringify(data_body),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                await res_pay_suscription.json();
+            }else{
+                const res_pay_pauta = await fetch(`/api/v1/pautasusers/create`, {
+                    method: 'POST', //Request Type
+                    //body: formData, //post body
+                    body: JSON.stringify(data_body),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                await res_pay_suscription.json();
+            }
         }
         
         $( document ).ready(function() {
@@ -283,8 +295,8 @@
             const merchantId = $('#merchantId').val()
             const accountId = $('#accountId').val()
             const btn = document.getElementById('submit')
-
-            const amount = dataPay.amount
+            
+            const amount = dataPay.type_pay == 'SUSCRIPTION' ? dataPay.amount : dataPay.valor
             const payment_description = dataPay.payment_description
             const reference_code = dataPay.reference_code
             const buyer_email = dataPay.buyer_email
@@ -297,8 +309,6 @@
             $('#referenceCode').val(reference_code)
             $('#buyerEmail').val(buyer_email)
             $('#signature').val(signature)
-
-            
 
             btn.click();
         });

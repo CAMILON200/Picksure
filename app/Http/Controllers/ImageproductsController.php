@@ -83,16 +83,29 @@ class ImageproductsController extends Controller
       ->toArray();
 
       $usersId = array_column($getRoles,'id');
-      $image = DB::table('imageproducts')
-      ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
-      ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description' )
-      ->where('texts_imageproducts.language', '=', $language)
-      ->where('imageproducts.status', '=', 1)
-      ->where('imageproducts.is_public', '=', 1)
-      ->whereIn('imageproducts.user_id', $usersId)
-      ->orderBy('imageproducts.created_at', 'DESC')
-      ->offset($offset)->limit($limit)
-      ->get();
+      if($limit != 0){
+        $image = DB::table('imageproducts')
+        ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
+        ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description' )
+        ->where('texts_imageproducts.language', '=', $language)
+        ->where('imageproducts.status', '=', 1)
+        ->where('imageproducts.is_public', '=', 1)
+        ->whereIn('imageproducts.user_id', $usersId)
+        ->orderBy('imageproducts.created_at', 'DESC')
+        ->offset($offset)->limit($limit)
+        ->get();
+      }else{
+        $image = DB::table('imageproducts')
+        ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
+        ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description' )
+        ->where('texts_imageproducts.language', '=', $language)
+        ->where('imageproducts.status', '=', 1)
+        ->where('imageproducts.is_public', '=', 1)
+        ->whereIn('imageproducts.user_id', $usersId)
+        ->orderBy('imageproducts.created_at', 'DESC')
+        ->get();
+      }
+
       $response['status'] = 200;
       $response['data'] = $image; 
     }	else {

@@ -50,9 +50,11 @@ Route::post('/user/avatar_users', [UserController::class, 'AvatarUser']);
 Route::post('/user/pay_suscription', [UserController::class, 'PaySuscription']);
 Route::post('/user/confirm_suscription', [UserController::class, 'ConfirmSuscription']);
 Route::delete('/user/delete_users/{user_id}', [UserController::class, 'DeleteUser']);
-Route::put('/user/update_users/{user_id}', [UserController::class, 'UpdateUser']);
-Route::get('/user/show_users/{user_id}', [UserController::class, 'ShowInfoUser']);
+Route::post('/user/inactive_users', [UserController::class, 'InactiveAccount']);
+Route::put('/user/update_users/{user_id}/{lang}', [UserController::class, 'UpdateUser']);
+Route::get('/user/show_users/{user_id}/{lang}', [UserController::class, 'ShowInfoUser']);
 Route::post('/user/verify_email', [UserController::class, 'VerifyEmail']);
+Route::post('/user/reset_password', [UserController::class, 'ResetPassword']);
 
 //GiftVoucher
 Route::get('/giftvoucher/{code}/{type}', [GiftVoucherContoller::class, 'read']);

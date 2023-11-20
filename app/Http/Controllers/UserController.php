@@ -547,7 +547,7 @@ class UserController extends Controller
        *  )
        * )
   */
-  public function UpdateUser(Request $request, $user_id){
+  public function UpdateUser(Request $request, $user_id, $lang){
     $user = User::find($user_id);
     $user->name = $request->name;
     $user->last_name = $request->last_name;
@@ -555,7 +555,7 @@ class UserController extends Controller
     $user->date_of_birth = $request->date_of_birth;
     $user->update();
 
-    return $this->ShowInfoUser($user_id);
+    return $this->ShowInfoUser($user_id, $lang);
   }
 
   public function PaySuscription(Request $request) {
@@ -639,7 +639,7 @@ class UserController extends Controller
      *  )
      * )
   */
-  public function ShowInfoUser($user_id){
+  public function ShowInfoUser($user_id, $lang){
 
     $$user_id = DB::table('users')
       ->join('roles', 'users.role_id', '=', 'roles.id')
@@ -675,6 +675,7 @@ class UserController extends Controller
           'payment_histories.payment_reference', 
           'payment_histories.amount', 
           'payment_histories.created_at', 
+          'payment_histories.reference_payment', 
         )
         ->where('payment_histories.payment_reference', 'SUSCRIPTION')
         ->where('payment_histories.user_id', $user_id)
@@ -686,6 +687,7 @@ class UserController extends Controller
           'payment_histories.payment_reference', 
           'payment_histories.amount', 
           'payment_histories.created_at', 
+          'payment_histories.reference_payment', 
         )
         ->where('payment_histories.payment_reference', 'PAUTA')
         ->where('payment_histories.user_id', $user_id)
@@ -698,8 +700,8 @@ class UserController extends Controller
         INNER JOIN users u ON u.id = pu.user_id
         WHERE pu.user_id = $user_id ORDER BY pu.created_at DESC", []);
 
-        $likeCategory = $this->showLikeCategory($user_id, 'ES');
-        $likeImageproduct = $this->showLikeImageproduct($user_id, 'ES');
+        $likeCategory = $this->showLikeCategory($user_id, $lang);
+        $likeImageproduct = $this->showLikeImageproduct($user_id, $lang);
 
         $$user_id->suscriptions = $payment_suscription;
         $$user_id->pautantes = $payment_pautante;
@@ -743,6 +745,24 @@ class UserController extends Controller
     } else {
       $response['exist'] = false;
     }
+    return response()->json($response, $response['status']);
+  }
+
+  public function InactiveAccount(Request $request) {
+    $user = User::find($request->id);
+    $user->status = 0;
+    $user->update();
+
+    $response['status'] = Response::HTTP_OK;
+    $response['data'] = $user;
+    return response()->json($response, $response['status']);
+  }
+
+  public function ResetPassword(Request $request) {
+    //$request->email;
+    $response['status'] = Response::HTTP_OK;
+    $response['data'] = 'Se envio un mensaje de texto';
+    $response['valid'] = 'OK';
     return response()->json($response, $response['status']);
   }
 }

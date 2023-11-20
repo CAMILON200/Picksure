@@ -30,6 +30,7 @@ return new class extends Migration
             $table->timestamp('end_date_subscriber')->nullable();
             $table->timestamp('start_date_pautante')->nullable();
             $table->timestamp('end_date_pautante')->nullable();
+			$table->integer('status');
         });
     }
 
