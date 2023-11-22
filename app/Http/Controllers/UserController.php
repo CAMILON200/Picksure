@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
+use PHPMailer\PHPMailer\PHPMailer;  
+use PHPMailer\PHPMailer\Exception;
+
 use function PHPUnit\Framework\isEmpty;
 
 class UserController extends Controller
@@ -759,10 +762,72 @@ class UserController extends Controller
   }
 
   public function ResetPassword(Request $request) {
-    //$request->email;
-    $response['status'] = Response::HTTP_OK;
+    $userData = User::where('email', $request->email)->first();
+
+    $sr = json_encode($userData);
+    $encript = base64_encode($sr);
     $response['data'] = 'Se envio un mensaje de texto';
-    $response['valid'] = 'OK';
+
+    $url = env('APP_URL')."/resetpassword/". $encript."/".$request->lang;
+
+    $mail = new PHPMailer(true);     // Passing `true` enables exceptions
+
+    try {
+      $mail->SMTPDebug = 0;
+      $mail->isSMTP();
+      $mail->Host = env('MAIL_HOST');
+      $mail->SMTPAuth = true;
+      $mail->Username = env('MAIL_USERNAME');
+      $mail->Password = env('MAIL_PASSWORD');
+      $mail->SMTPSecure = env('MAIL_ENCRYPTION');
+      $mail->Port = env('MAIL_PORT');
+
+      $mail->setFrom(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
+      $mail->addAddress($request->email);
+
+      $mail->isHTML(true);
+
+      if($request->lang == 'ES'){
+        $mail->Subject = 'Recuperar Contraseña';
+        $mail->Body    = 'Para cambiar tu contraseña debes ingresar a este link. '. $url;
+      }else{
+        $mail->Subject = 'Recover Password';
+        $mail->Body    = 'To change your password you must enter this link. '. $url;
+      }
+
+      if( !$mail->send() ) {
+          //return back()->with("failed", "Email not sent.")->withErrors($mail->ErrorInfo);
+          $response['data'] = 'failed", "Email not sent.'.$mail->ErrorInfo;
+      } else {
+        $response['data'] =  "Email has been sent.";
+      }
+      
+      //$request->email;
+      $response['status'] = Response::HTTP_OK;
+
+      $response['valid'] = 'OK';
+      return response()->json($response, $response['status']);
+
+    } catch (Exception $e) {
+      //$request->email;
+      $response['status'] = Response::HTTP_OK;
+
+      $response['valid'] = 'NOK';
+      $response['data'] = 'Message could not be sent. '.$e;
+      return response()->json($response, $response['status']);
+    }
+
+  }
+
+  public function ChangePassword(Request $request) {
+    $newpass = bcrypt($request->pass);
+
+    $user = User::find($request->id);
+    $user->password = $newpass;
+    $user->update();
+
+    $response['status'] = Response::HTTP_OK;
+    $response['data'] = $user;
     return response()->json($response, $response['status']);
   }
 }

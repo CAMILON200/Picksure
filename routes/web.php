@@ -25,6 +25,10 @@ Route::get('/responsepay/{key}', function ($key) {
 	return view('responsepay', ['key' => $key]);
 });
 
+Route::get('/resetpassword/{key}/{lang}', function ($key, $lang) {
+	return view('resetpassword', ['key' => $key, 'lang' => $lang]);
+});
+
 Route::get('/phpinfo', function() {
 	return phpinfo();
 });

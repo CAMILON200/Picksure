@@ -55,6 +55,7 @@ Route::put('/user/update_users/{user_id}/{lang}', [UserController::class, 'Updat
 Route::get('/user/show_users/{user_id}/{lang}', [UserController::class, 'ShowInfoUser']);
 Route::post('/user/verify_email', [UserController::class, 'VerifyEmail']);
 Route::post('/user/reset_password', [UserController::class, 'ResetPassword']);
+Route::post('/user/change_password', [UserController::class, 'ChangePassword']);
 
 //GiftVoucher
 Route::get('/giftvoucher/{code}/{type}', [GiftVoucherContoller::class, 'read']);
