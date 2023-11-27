@@ -120,8 +120,8 @@ class PautasUsersController extends Controller
         INNER JOIN users u ON u.id = pu.user_id
         LEFT JOIN locations_pautas lp ON lp.pauta_id = pu.id
         LEFT JOIN categories_pautas cp ON cp.pauta_id = pu.id 
-        WHERE CURRENT_DATE() BETWEEN pu.start_date
-        and pu.end_date and pu.status = 1 and lp.location_prefix = '$location' and cp.category_id = $category_id", []);
+        WHERE CURRENT_DATE() BETWEEN pu.start_date AND pu.end_date 
+        AND pu.status = 2 AND lp.location_prefix = '$location' AND cp.category_id = $category_id", []);
     }
       
     $response['status'] = 200;

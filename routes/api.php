@@ -97,10 +97,10 @@ Route::get('/imageproducts_delete/{id}', [ImageproductsController::class, 'delet
 Route::get('/imageproducts_id/{id}/{language}', [ImageproductsController::class, 'imagesForId']);
 
 //Pautas
-Route::get('/pautasusers/{location}/{category_id}', [PautasUsersController::class, 'pautaForCategory']);
 Route::get('/pautasusers/{location}', [PautasUsersController::class, 'index']);
 Route::post('/pautasusers/create', [PautasUsersController::class, 'payPauta']);
 Route::post('/pautasusers/active', [PautasUsersController::class, 'activePauta']);
+Route::get('/pautasusers/{location}/{category_id}', [PautasUsersController::class, 'pautaForCategory']);
 
 //Imagenes Pautadas
 Route::get('/imagepautas/{user_id}/{pauta_id}/{language}', [ImagePautasController::class, 'index']);
