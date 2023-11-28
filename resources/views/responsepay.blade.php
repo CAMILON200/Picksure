@@ -251,7 +251,7 @@
             let transactionState = $("#transactionState").val()
             let referenceCode = $("#referenceCode").val()
             let reference_pol = $("#reference_pol").val()
-            let estadoTx = $("#estadoTx").val()
+            let estadoTx = $("#estadoTx").val() + 'RESPONSEPAY'
             let buyerEmail = $("#buyerEmail").val()
             let amount = $("#amount").val()
             let extra1 = $("#extra1").val()
@@ -280,6 +280,7 @@
                 });
                 await res_pay_suscription.json();
             }else{
+                //PAGO DE PAUTA
                 let data_body = {
                     user_id: extra1,
                     valor: amount,

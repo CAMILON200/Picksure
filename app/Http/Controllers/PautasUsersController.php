@@ -199,23 +199,30 @@ class PautasUsersController extends Controller
   }
 
   public function paymentStatePauta(Request $request) {
-    $payment_history = new PaymentHistory;
-    $payment_history->user_id = $request->user_id;
-    $payment_history->payment_reference = 'PAUTA';
-    $payment_history->amount = $request->valor;
-    $payment_history->is_approved = $request->is_approved;
-    $payment_history->reference_payment = $request->reference_payment;
-    $payment_history->reference_pol = $request->reference_pol;
-    $payment_history->estado_tx = $request->estado_tx;
-    $payment_history->buyer_email = $request->buyer_email;
-    $payment_history->date_payment = date("Y-m-d H:i:s");
-    $payment_history->save();
+    if (PaymentHistory::where('reference_pol', '=', $request->reference_pol)->exists()) {
+      // user found
+      $response["status"] = 200;
+      $response["message"] = 'Se actualizacion de suscripción anteriormente.';
+      return response()->json($response, $response['status']);
+    } else {
+      $payment_history = new PaymentHistory;
+      $payment_history->user_id = $request->user_id;
+      $payment_history->payment_reference = 'PAUTA';
+      $payment_history->amount = $request->valor;
+      $payment_history->is_approved = $request->is_approved;
+      $payment_history->reference_payment = $request->reference_payment;
+      $payment_history->reference_pol = $request->reference_pol;
+      $payment_history->estado_tx = $request->estado_tx;
+      $payment_history->buyer_email = $request->buyer_email;
+      $payment_history->date_payment = date("Y-m-d H:i:s");
+      $payment_history->save();
 
-    $response["status"] = 200;
-    $response["payment"] = $payment_history;
-    $response["message"] = 'Se guardo exitosamente.';
+      $response["status"] = 200;
+      $response["payment"] = $payment_history;
+      $response["message"] = 'Se guardo exitosamente.';
 
-    return response()->json($response, $response['status']);
+      return response()->json($response, $response['status']);
+    }
   }
   
   /**

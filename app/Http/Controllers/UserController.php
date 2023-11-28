@@ -562,35 +562,43 @@ class UserController extends Controller
   }
 
   public function PaySuscription(Request $request) {
-    if(isset($request->gift_voucher)){
-      $giftVoucher = GiftVoucher::find($request->gift_voucher);
-      $giftVoucher->state = 0;
-      $giftVoucher->update();
+
+    if (PaymentHistory::where('reference_pol', '=', $request->reference_pol)->exists()) {
+      // user found
+      $response["status"] = 200;
+      $response["message"] = 'Se actualizacion de suscripción anteriormente.';
+      return response()->json($response, $response['status']);
+    } else {
+      if(isset($request->gift_voucher)){
+        $giftVoucher = GiftVoucher::find($request->gift_voucher);
+        $giftVoucher->state = 0;
+        $giftVoucher->update();
+      }
+  
+      if($request->is_approved == 2) {
+        $user = User::find($request->id);
+        $user->start_date_subscriber = $request->start_date_subscriber;
+        $user->end_date_subscriber = $request->end_date_subscriber;
+        $user->update();
+      }
+  
+      $payment_history = new PaymentHistory;
+      $payment_history->user_id = $request->id;
+      $payment_history->payment_reference = $request->payment_reference;
+      $payment_history->amount = $request->amount;
+      $payment_history->is_approved = $request->is_approved;
+      $payment_history->reference_payment = $request->reference_code;
+      $payment_history->reference_pol = $request->reference_pol;
+      $payment_history->estado_tx = $request->estado_tx;
+      $payment_history->buyer_email = $request->buyer_email;
+      $payment_history->date_payment = date("Y-m-d H:i:s");
+      $payment_history->save();
+  
+      $response["status"] = 200;
+      $response["message"] = 'Se actualizo suscription correctamente.';
+  
+      return response()->json($response, $response['status']);
     }
-
-    if($request->is_approved == 2) {
-      $user = User::find($request->id);
-      $user->start_date_subscriber = $request->start_date_subscriber;
-      $user->end_date_subscriber = $request->end_date_subscriber;
-      $user->update();
-    }
-
-    $payment_history = new PaymentHistory;
-    $payment_history->user_id = $request->id;
-    $payment_history->payment_reference = $request->payment_reference;
-    $payment_history->amount = $request->amount;
-    $payment_history->is_approved = $request->is_approved;
-    $payment_history->reference_payment = $request->reference_code;
-    $payment_history->reference_pol = $request->reference_pol;
-    $payment_history->estado_tx = $request->estado_tx;
-    $payment_history->buyer_email = $request->buyer_email;
-    $payment_history->date_payment = date("Y-m-d H:i:s");
-    $payment_history->save();
-
-    $response["status"] = 200;
-    $response["message"] = 'Se actualizo suscription correctamente';
-
-    return response()->json($response, $response['status']);
   }
 
   public function ConfirmSuscription(Request $request) {

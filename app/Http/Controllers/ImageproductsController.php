@@ -551,6 +551,13 @@ class ImageproductsController extends Controller
     
     $itemProducts = $request['text_products'];
     $itemProductsARR = json_decode($itemProducts, true);
+
+    $language = $request["language"];
+    $estaEncontrado = in_array($request["language"], array_column($itemProductsARR, 'language'));
+
+    if (!$estaEncontrado) {
+      $language = $itemProductsARR[0]['language'];
+    }
     if(count($itemProductsARR) > 0){
       foreach ($itemProductsARR as $key => $value) {
         $texts = TextsImageproducts::create([
@@ -579,7 +586,7 @@ class ImageproductsController extends Controller
       ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
       ->leftJoin('images_pautas', 'imageproducts.id', '=', 'images_pautas.imageproducts_id')
       ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description', 'images_pautas.id as id_pautas')
-      ->where('texts_imageproducts.language', '=', $request["language"])
+      ->where('texts_imageproducts.language', '=', $language)
       ->where('imageproducts.user_id', '=', $request["user_id"])
       ->where('imageproducts.id', '=', $result_image)
       ->get();
@@ -593,8 +600,16 @@ class ImageproductsController extends Controller
     TextsImageproducts::where('imageproduct_id', $result_image)->delete();
     ImageproductsCategory::where('imageproduct_id', $result_image)->delete();
 
+
+    
     $itemProducts = $request['text_products'];
     $itemProductsARR = json_decode($itemProducts, true);
+    $language = $request["language"];
+    $estaEncontrado = in_array($request["language"], array_column($itemProductsARR, 'language'));
+
+    if (!$estaEncontrado) {
+      $language = $itemProductsARR[0]['language'];
+    }
     if(count($itemProductsARR) > 0){
       foreach ($itemProductsARR as $key => $value) {
         $texts = TextsImageproducts::create([
@@ -623,7 +638,7 @@ class ImageproductsController extends Controller
       ->join('texts_imageproducts', 'texts_imageproducts.imageproduct_id', '=', 'imageproducts.id')
       ->leftJoin('images_pautas', 'imageproducts.id', '=', 'images_pautas.imageproducts_id')
       ->select('imageproducts.id', 'texts_imageproducts.language','imageproducts.img_url' ,'texts_imageproducts.title', 'texts_imageproducts.description', 'images_pautas.id as id_pautas')
-      ->where('texts_imageproducts.language', '=', $request["language"])
+      ->where('texts_imageproducts.language', '=', $language)
       ->where('imageproducts.user_id', '=', $request["user_id"])
       ->where('imageproducts.id', '=', $result_image)
       ->get();
