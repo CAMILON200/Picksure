@@ -122,6 +122,9 @@
                         <input  id="signature"  name="signature"                type="hidden"  value=""  >
                         <input  id="test"  name="test"                          type="hidden"  value="0" >
                         <input  id="buyerEmail"  name="buyerEmail"              type="hidden"  value="" >
+                        <input  id="buyerFullName"  name="buyerFullName"        type="hidden"  value="" >
+                        <input  id="extra1"  name="extra1"                      type="hidden"  value="" >
+                        <input  id="extra2"  name="extra2"                      type="hidden"  value="" >
                         <input  id="responseUrl"  name="responseUrl"            type="hidden"  value="https://picksure.com/responsepay/response.php" >
                         <input  id="confirmationUrl"  name="confirmationUrl"    type="hidden"  value="https://picksure.com/confirmationpay/response.php" >
                         <input  id="submit"  name="Submit"                      type="submit"  value="Pagar" >
@@ -264,17 +267,7 @@
         }
 
         async function saveProcessPay(data_body) {
-            if(data_body.type_pay == 'SUSCRIPTION') {
-                const res_pay_suscription = await fetch(`/api/v1/user/pay_suscription`, {
-                    method: 'POST', //Request Type
-                    //body: formData, //post body
-                    body: JSON.stringify(data_body),
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-                await res_pay_suscription.json();
-            }else{
+            if(data_body.type_pay != 'SUSCRIPTION') {
                 const res_pay_pauta = await fetch(`/api/v1/pautasusers/create`, {
                     method: 'POST', //Request Type
                     //body: formData, //post body
@@ -300,6 +293,8 @@
             const payment_description = dataPay.payment_description
             const reference_code = dataPay.reference_code
             const buyer_email = dataPay.buyer_email
+            const buyer_name = dataPay.buyer_name
+            const extra1 = dataPay.type_pay == 'SUSCRIPTION' ? dataPay.id+'+'+dataPay.start_date_subscriber+'+'+dataPay.end_date_subscriber : dataPay.id
             const signature = md5(`${apiKey}~${merchantId}~${reference_code}~${amount}~COP`);
 
             saveProcessPay(dataPay)
@@ -308,7 +303,10 @@
             $('#description').val(`PICKSURE - ${payment_description}`)
             $('#referenceCode').val(reference_code)
             $('#buyerEmail').val(buyer_email)
+            $('#buyerFullName').val(buyer_name)
             $('#signature').val(signature)
+            $('#extra1').val(extra1)
+            $('#extra2').val(dataPay.type_pay)
 
             btn.click();
         });

@@ -156,10 +156,10 @@
                 <div id="content-state-btn" class="col-md-12">
                     @foreach($dataType->readRows as $row)
                         @if ($row->field == 'status')
-                            @if ($dataTypeContent->{$row->field} == 1)
-                                <button id="btn_status_change" type="button" class="btn btn-secondary btn-lg btn-block" onclick="setPauta()"><i class="voyager-x" ></i> Eliminar</button>
+                            @if ($dataTypeContent->{$row->field} == 2)
+                                <button id="btn_status_change" type="button" class="btn btn-secondary btn-lg btn-block" onclick="setPauta()"><i class="voyager-x" ></i> Rechazar</button>
                             @else
-                                <button id="btn_status_change" type="button" class="btn btn-primary btn-lg btn-block" onclick="setPauta()"><i class="voyager-check"></i> Activar</button>
+                                <button id="btn_status_change" type="button" class="btn btn-primary btn-lg btn-block" onclick="setPauta()"><i class="voyager-check"></i> Aprobar</button>
                             @endif
                         @endif
                     @endforeach

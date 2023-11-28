@@ -11,32 +11,34 @@
     $firma = $_REQUEST['signature'];
     $reference_pol = $_REQUEST['reference_pol'];
     $cus = $_REQUEST['cus'];
-    $extra1 = $_REQUEST['description'];
+    $description = $_REQUEST['description'];
+    $extra1 = $_REQUEST['extra1'];
+    $extra2 = $_REQUEST['extra2'];
+    $buyerEmail = $_REQUEST["buyerEmail"];
     $pseBank = $_REQUEST['pseBank'];
     $lapPaymentMethod = $_REQUEST['lapPaymentMethod'];
     $transactionId = $_REQUEST['transactionId'];
 
     if ($_REQUEST['transactionState'] == 4 ) {
-        $estadoTx = "Transacción aprobada";
+        $estadoTx = "TRANSACCIÓN APROBADA";
     }
 
     else if ($_REQUEST['transactionState'] == 6 ) {
-        $estadoTx = "Transacción rechazada";
+        $estadoTx = "TRANSACCIÓN RECHAZADA";
     }
 
     else if ($_REQUEST['transactionState'] == 104 ) {
-        $estadoTx = "Error";
+        $estadoTx = "ERROR";
     }
 
     else if ($_REQUEST['transactionState'] == 7 ) {
-        $estadoTx = "Pago pendiente";
+        $estadoTx = "PAGO PENDIENTE";
     }
 
     else {
         $estadoTx=$_REQUEST['mensaje'];
     }
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -140,7 +142,9 @@
                                 <td>Estado de la transacción</td>
                                 <td>
                                     <?php echo $estadoTx; ?>
-                                    <input type="hidden" id="referenceCode" value="<?= $transactionState?>">
+                                    <input type="hidden" id="transactionState" value="<?= $transactionState?>">
+                                    <input type="hidden" id="estadoTx" value="<?= $estadoTx?>">
+                                    <input type="hidden" id="amount" value="<?= $New_value?>">
                                 </td>
                             </tr>
                             <tr>
@@ -150,7 +154,10 @@
                                 </tr>
                                 <tr>
                                     <td>Referencia de venta</td>
-                                    <td><?php echo $reference_pol; ?></td>
+                                    <td>
+                                        <?php echo $reference_pol; ?>
+                                        <input type="hidden" id="reference_pol" value="<?= $reference_pol?>">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Referencia de la transacción</td>
@@ -184,7 +191,12 @@
                                     </tr>
                                     <tr>
                                         <td>Descripción</td>
-                                        <td><?php echo ($extra1); ?></td>
+                                        <td>
+                                            <?php echo ($description); ?>
+                                            <input type="hidden" id="extra1" value="<?= $extra1?>">
+                                            <input type="hidden" id="extra2" value="<?= $extra2?>">
+                                            <input type="hidden" id="buyerEmail" value="<?= $buyerEmail?>">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Entidad:</td>
@@ -235,12 +247,58 @@
         }
        
         $( document ).ready(function() {
-            console.log( "ready!" );
-            let data_body = {
-                referenceCode: $("#referenceCode").val(),
-                transactionState: $("#transactionState").val(),
+            let type_pay = $("#extra2").val()
+            let transactionState = $("#transactionState").val()
+            let referenceCode = $("#referenceCode").val()
+            let reference_pol = $("#reference_pol").val()
+            let estadoTx = $("#estadoTx").val()
+            let buyerEmail = $("#buyerEmail").val()
+            let amount = $("#amount").val()
+            let extra1 = $("#extra1").val()
+            if(type_pay == 'SUSCRIPTION'){
+                let splExtra1 = extra1.split('+');
+
+                let data_body = {
+                    id: splExtra1[0],
+                    start_date_subscriber: splExtra1[1],
+                    end_date_subscriber: splExtra1[2],
+                    payment_reference: type_pay,
+                    amount: amount,
+                    is_approved: transactionState != 4 ? transactionState == 7 ? 1 : 0 : 2,
+                    reference_code: referenceCode,
+                    reference_pol: reference_pol,
+                    estado_tx: estadoTx,
+                    buyer_email: buyerEmail
+                }
+                const res_pay_suscription = await fetch(`/api/v1/user/pay_suscription`, {
+                    method: 'POST', //Request Type
+                    //body: formData, //post body
+                    body: JSON.stringify(data_body),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                await res_pay_suscription.json();
+            }else{
+                let data_body = {
+                    user_id: extra1,
+                    valor: amount,
+                    is_approved: transactionState != 4 ? transactionState == 7 ? 1 : 0 : 2,
+                    reference_payment: referenceCode,
+                    reference_pol: reference_pol,
+                    estadoTx: estadoTx,
+                    buyer_email: buyerEmail
+                } 
+                const res_pay_pauta = await fetch(`/api/v1/pautasusers/payment_state`, {
+                    method: 'POST', //Request Type
+                    //body: formData, //post body
+                    body: JSON.stringify(data_body),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                await res_pay_pauta.json();
             }
-            saveProcessPay(data_body)
         });
     </script>
 </html>

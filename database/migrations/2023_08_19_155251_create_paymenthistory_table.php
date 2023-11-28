@@ -19,6 +19,10 @@ return new class extends Migration
 			$table->unsignedBigInteger('user_id');
 			$table->foreign('user_id')->references('id')->on('users');
 			$table->string('payment_reference');
+			$table->string('reference_payment');
+			$table->string('reference_pol');
+			$table->string('estado_tx');
+			$table->string('buyer_email');
 			$table->integer('amount');
 			$table->integer('is_approved');
 			$table->timestamps();

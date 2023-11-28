@@ -411,7 +411,7 @@
                 if(state_pauta.status == 200){
                     let class_state_active = '<span class="badge badge-success">Aprobado</span>' 
                     let class_state_inactive = '<span class="badge badge-danger">Rechazado</span>'
-                    let class_state_update = state == 1 ? class_state_active : class_state_inactive
+                    let class_state_update = state == 2 ? class_state_active : class_state_inactive
                     $('#content-state-'+id).html(class_state_update)
                     let class_btn_active = '<a href="javascript:void(0)" onclick="setPauta('+id+',2)" class="badge badge-primary" title="Aprobar Pauta"><i class="voyager-check"></i></a>' 
                     let class_btn_inactive = '<a href="javascript:void(0)" onclick="setPauta('+id+',0)" class="badge badge-secondary" title="Rechazar Pauta"><i class="voyager-x"></i></a>'

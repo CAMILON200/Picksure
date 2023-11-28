@@ -99,6 +99,7 @@ Route::get('/imageproducts_id/{id}/{language}', [ImageproductsController::class,
 //Pautas
 Route::get('/pautasusers/{location}', [PautasUsersController::class, 'index']);
 Route::post('/pautasusers/create', [PautasUsersController::class, 'payPauta']);
+Route::post('/pautasusers/payment_state', [PautasUsersController::class, 'paymentStatePauta']);
 Route::post('/pautasusers/active', [PautasUsersController::class, 'activePauta']);
 Route::get('/pautasusers/{location}/{category_id}', [PautasUsersController::class, 'pautaForCategory']);
 

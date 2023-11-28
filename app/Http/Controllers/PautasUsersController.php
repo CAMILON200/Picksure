@@ -114,7 +114,7 @@ class PautasUsersController extends Controller
   {  	
     $image = [];
     if($location != ''){
-      $image = DB::select("SELECT pu.id , pu.img_url , pu.destination_url , pu.description , 
+      $image_sql = DB::select("SELECT pu.id , pu.img_url , pu.destination_url , pu.description , 
         pu.user_id , u.avatar , CONCAT(u.name,' ',u.last_name) as name, pu.start_date, pu.end_date, pu.valor 
         FROM pautas_users pu 
         INNER JOIN users u ON u.id = pu.user_id
@@ -122,6 +122,8 @@ class PautasUsersController extends Controller
         LEFT JOIN categories_pautas cp ON cp.pauta_id = pu.id 
         WHERE CURRENT_DATE() BETWEEN pu.start_date AND pu.end_date 
         AND pu.status = 2 AND lp.location_prefix = '$location' AND cp.category_id = $category_id", []);
+      $image = $image_sql;
+      shuffle($image); 
     }
       
     $response['status'] = 200;
@@ -137,6 +139,7 @@ class PautasUsersController extends Controller
     $pauta->user_id = $request->user_id;
     $pauta->start_date = $request->start_date;
     $pauta->end_date = $request->end_date;
+    $pauta->reference_payment = $request->reference_code;
     $pauta->valor = $request->valor;
     $pauta->description = $request->description_pauta;
     $pauta->destination_url = $request->destination_url;
@@ -179,18 +182,38 @@ class PautasUsersController extends Controller
       DB::commit();
     }
 
-    $payment_history = new PaymentHistory;
+    /* $payment_history = new PaymentHistory;
     $payment_history->user_id = $request->user_id;
     $payment_history->payment_reference = 'PAUTA';
     $payment_history->amount = $request->valor;
     $payment_history->is_approved = 1;
     $payment_history->reference_payment = $request->reference_payment;
     $payment_history->date_payment = date("Y-m-d H:i:s");
-    $payment_history->save();
+    $payment_history->save(); */
 
     $response["status"] = 200;
     $response["id"] = $result_id;
     $response["message"] = 'La pauta creada exitosamente.';
+
+    return response()->json($response, $response['status']);
+  }
+
+  public function paymentStatePauta(Request $request) {
+    $payment_history = new PaymentHistory;
+    $payment_history->user_id = $request->user_id;
+    $payment_history->payment_reference = 'PAUTA';
+    $payment_history->amount = $request->valor;
+    $payment_history->is_approved = $request->is_approved;
+    $payment_history->reference_payment = $request->reference_payment;
+    $payment_history->reference_pol = $request->reference_pol;
+    $payment_history->estado_tx = $request->estado_tx;
+    $payment_history->buyer_email = $request->buyer_email;
+    $payment_history->date_payment = date("Y-m-d H:i:s");
+    $payment_history->save();
+
+    $response["status"] = 200;
+    $response["payment"] = $payment_history;
+    $response["message"] = 'Se guardo exitosamente.';
 
     return response()->json($response, $response['status']);
   }
