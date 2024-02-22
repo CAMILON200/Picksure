@@ -10,6 +10,7 @@ use App\Http\Controllers\LocationsController;
 use App\Http\Controllers\ImageproductsController;
 use App\Http\Controllers\PautasUsersController;
 use App\Http\Controllers\ImagePautasController;
+use App\Http\Controllers\SheduledsController;
 use App\Http\Controllers\ParametersController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DepartmentController;
@@ -56,6 +57,7 @@ Route::get('/user/show_users/{user_id}/{lang}', [UserController::class, 'ShowInf
 Route::post('/user/verify_email', [UserController::class, 'VerifyEmail']);
 Route::post('/user/reset_password', [UserController::class, 'ResetPassword']);
 Route::post('/user/change_password', [UserController::class, 'ChangePassword']);
+Route::post('/user/registerPaySuscriiption', [UserController::class, 'addPaySuscription']);
 
 //GiftVoucher
 Route::get('/giftvoucher/{code}/{type}', [GiftVoucherContoller::class, 'read']);
@@ -105,6 +107,9 @@ Route::get('/pautasusers/{location}/{category_id}', [PautasUsersController::clas
 
 //Imagenes Pautadas
 Route::get('/imagepautas/{user_id}/{pauta_id}/{language}', [ImagePautasController::class, 'index']);
+
+//Shedules
+Route::get('/shedules', [SheduledsController::class, 'checkPayments']);
 
 //parameters
 Route::get('/parameters', [ParametersController::class, 'index']);

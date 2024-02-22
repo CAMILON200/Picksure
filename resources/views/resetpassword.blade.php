@@ -148,7 +148,7 @@
                     <div class="text-center text-sm text-gray-500 sm:text-left"></div>
 
                     <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">
-                        Developed by ZIEL - v1.1.7
+                        Developed by ZIEL 
                     </div>
                 </div>
             </div>

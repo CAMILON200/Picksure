@@ -60,6 +60,29 @@
     integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
     crossorigin="anonymous"></script>
 <script>
+    async function paySuscription(data_body) {
+        const res_pay_suscription = await fetch(`/api/v1/user/pay_suscription`, {
+                method: 'POST', //Request Type
+                //body: formData, //post body
+                body: JSON.stringify(data_body),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            await res_pay_suscription.json();
+    }
+
+    async function payPauta(data_body) {
+        const res_pay_pauta = await fetch(`/api/v1/pautasusers/payment_state`, {
+            method: 'POST', //Request Type
+            //body: formData, //post body
+            body: JSON.stringify(data_body),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        await res_pay_pauta.json();
+    }
     $( document ).ready(function() {
         let type_pay = $("#extra2").val()
         let transactionState = $("#transactionState").val()
@@ -84,15 +107,7 @@
                 estado_tx: estadoTx,
                 buyer_email: buyerEmail
             }
-            const res_pay_suscription = await fetch(`/api/v1/user/pay_suscription`, {
-                method: 'POST', //Request Type
-                //body: formData, //post body
-                body: JSON.stringify(data_body),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            await res_pay_suscription.json();
+            paySuscription(data_body)
         }else{
             //PAGO DE PAUTA
             let data_body = {
@@ -104,15 +119,7 @@
                 estadoTx: estadoTx,
                 buyer_email: buyerEmail
             } 
-            const res_pay_pauta = await fetch(`/api/v1/pautasusers/payment_state`, {
-                method: 'POST', //Request Type
-                //body: formData, //post body
-                body: JSON.stringify(data_body),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            await res_pay_pauta.json();
+            payPauta(data_body)
         }
     });
 </script>  

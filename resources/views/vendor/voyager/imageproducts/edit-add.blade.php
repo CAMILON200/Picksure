@@ -104,19 +104,19 @@
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="1" checked>
 									<label class="form-check-label" for="flexRadioDefault1">
-										Subir Imagen
+										Upload Image
 									</label>
 								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="2">
 									<label class="form-check-label" for="flexRadioDefault2">
-										Url de la Imagen
+										Url Image
 									</label>
 								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" value="3">
 									<label class="form-check-label" for="flexRadioDefault3">
-										Subir Imagenes por CSV
+										Upload Images for CSV
 									</label>
 								</div>
 							@endif
@@ -126,11 +126,11 @@
 	
 								<div class="icon voyager-upload upload_svg"></div>
 	
-								<p class="small my-2">Arrastre y suelte la(s) imagen(es) de fondo dentro de la región punteada<br><i>ó</i></p>
+								<p class="small my-2"> Drag and drop the background image(s) into the dotted region<br><i>ó</i></p>
 	
 								<input name="image_product" id="image_product" data-post-name="image_background"  class="position-absolute invisible" type="file" accept="image/jpeg, image/png, image/svg+xml" />
 	
-								<label class="btn btn-primary mb-3" for="image_product">Seleccionar archivo(s)</label>
+								<label class="btn btn-primary mb-3" for="image_product">Select file</label>
 	
 								<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
 	
@@ -144,18 +144,39 @@
 								
 								<input name="image_product_2" id="image_product_2" data-post-name="image_background"  class="position-absolute invisible" type="file" accept=".csv" />
 								
-								<label class="btn btn-primary mb-3" for="image_product_2">Seleccionar archivo(s)</label>
+								<label class="btn btn-primary mb-3" for="image_product_2">Select file</label>
 								
 								</br>
 								
-								<a href="{{$url_bulck_load}}" target="_blank" type="button">Descargar Plantilla CSV</a>
+								<a href="{{$url_bulck_load}}" target="_blank" type="button">Download CSV</a>
 								<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
 	
 							</fieldset>
 						@else
-							<div style="display:flex; justify-content: center">
-								<img class="" style="max-width: 20%;" src="{{ filter_var($dataTypeContent->img_url, FILTER_VALIDATE_URL) ? $dataTypeContent->img_url : Voyager::image($dataTypeContent->img_url) }}">
+							<div class="form-check" style="display: none;">
+								<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="1" checked>
 							</div>
+							
+							<input name="created_at" id="created_at"  type="hidden" value="{{$dataTypeContent->created_at}}" />
+
+							<fieldset id="img-content" class="upload_dropZone text-center mb-3 p-4">
+	
+	
+								<div class="icon voyager-upload upload_svg"></div>
+	
+								<p class="small my-2"> Drag and drop the background image(s) into the dotted region<br><i>ó</i></p>
+	
+								<input name="image_product" id="image_product" data-post-name="image_background"  class="position-absolute invisible" type="file" accept="image/jpeg, image/png, image/svg+xml" />
+	
+								<label class="btn btn-primary mb-3" for="image_product">Select file</label>
+	
+								<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0">
+									
+										<img class="upload_img mt-2" style="max-width: 20%;" src="{{ filter_var($dataTypeContent->img_url, FILTER_VALIDATE_URL) ? $dataTypeContent->img_url : Voyager::image($dataTypeContent->img_url) }}">
+									
+								</div>
+	
+							</fieldset>
 						@endif
 
 
@@ -168,7 +189,7 @@
 						
 						<div class="form-group itemCat">
 							<div class="col-md-12">
-								<label for="description">Selecciona la Categoría</label>
+								<label for="description">Select Categories</label>
 								<div class="categories-product" style="height:auto !important; margin-bottom:30px !important">
 									@foreach($categories as $category)
 										<div class="form-check">
@@ -192,18 +213,18 @@
 						<div class="form-group itemInfo">
 							<input type="hidden" name="setting_tab" class="setting_tab" />
 							<div class="">
-								<h3 class="panel-title">Agregar información de la imágen</h3>
+								<h3 class="panel-title">Add information image</h3>
 								<div id="messsage-item" class="text-danger"></div>
 							</div>
 							<div class="col-md-3">
-								<label for="title">Título</label>
-								<input type="text" class="form-control" name="title" id="title" placeholder="Escribe el título">
+								<label for="title">Title</label>
+								<input type="text" class="form-control" name="title" id="title" placeholder="Write title">
 							</div>
 							
 							<div class="col-md-3">
-								<label for="group">Idioma</label>
+								<label for="group">Language</label>
 								<select class="form-control" name="lenguage" id="lenguage">
-									<option  value=""> Seleccione </option>
+									<option  value=""> Select </option>
 									@foreach($languages as $language)
 										<option 
 											value="{{$language->prefijo}}"
@@ -214,15 +235,15 @@
 								</select>
 							</div>
 							<div class="col-md-3">
-								<label for="description">Descripción</label>
-								<textarea class="form-control" name="description" id="description" placeholder="Descripción del modelo" ></textarea>
+								<label for="description">Description</label>
+								<textarea class="form-control" name="description" id="description" placeholder="Description of model" ></textarea>
 							</div>
 							
 							<div class="col-md-3">
 								<div class="form-group">
 									<button type="button" class="btn btn-primary pull-right new-setting-btn" 
 										id="itemTextsImageProducts" onclick="addItemImageProducts()">
-										<i class="voyager-plus"></i>Agregar texto
+										<i class="voyager-plus"></i>Add text
 									</button>
 								</div>
 							</div>
@@ -236,10 +257,10 @@
 									<table class="table table-hover">
 										<thead>
 											<tr>
-												<th scope="col">Título</th>
-												<th scope="col">Descripción</th>
-												<th scope="col">Idioma</th>
-												<th scope="col">Acciones</th>
+												<th scope="col">Title</th>
+												<th scope="col">Description</th>
+												<th scope="col">Language</th>
+												<th scope="col">Actions</th>
 											</tr>
 										</thead>
 										<tbody id="columnItemText">
@@ -276,7 +297,7 @@
 
 					<div class="panel-footer">
 						@section('submit-buttons')
-							<button type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
+							<button type="submit" id="submitButton" disabled class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
 						@stop
 						@yield('submit-buttons')
 					</div>
@@ -317,6 +338,7 @@
 
 @section('javascript')
 	<script>
+		var selectFrm = 1
 		var params = {};
 		var $file;
 
@@ -326,9 +348,14 @@
 		}
 
 		function showSelected(e) {
+			console.log('llego')
 			if (this.checked) {
 				console.log("dmdndn = ", this.value)
 				if(this.value == 1){
+					selectFrm = 1
+					// Obtener el botón de envío
+					$('#submitButton').attr('disabled', true);
+
 					$("#img-content").show()
 					$("#url-content").hide()
 					$("#upload_csv").hide()
@@ -336,6 +363,9 @@
 					$(".itemInfo").show()
 					$(".itemTable").show()
 				}else if (this.value == 2){
+					selectFrm = 2
+					// Obtener el botón de envío
+					$('#submitButton').attr('disabled', false);
 					$("#img-content").hide()
 					$("#url-content").show()
 					$("#upload_csv").hide()
@@ -345,6 +375,9 @@
 				}
 				else
 				{
+					
+					selectFrm = 3
+					$('#submitButton').attr('disabled', false);
 					$("#img-content").hide()
 					$("#url-content").hide()
 					$("#upload_csv").show()
@@ -376,7 +409,24 @@
 
 		$('document').ready(function () {
 
-			
+			if (document.getElementById('created_at') == null){
+				document.getElementById('image_product').addEventListener('change', function() {
+					// Obtener el botón de envío
+					var submitButton = document.getElementById('submitButton');
+	
+					// Habilitar el botón de envío cuando se carga un archivo
+					submitButton.disabled = false;
+				});
+			}else{
+				var submitButton = document.getElementById('submitButton');
+				submitButton.disabled = false
+			}
+
+			// También puedes deshabilitar el botón de envío al cargar la página
+			document.addEventListener('DOMContentLoaded', function() {
+				var submitButton = document.getElementById('submitButton');
+				submitButton.disabled = true;
+			});
 
 			$('.toggleswitch').bootstrapToggle();
 
@@ -579,6 +629,7 @@
 					dataRefs.gallery.appendChild(text);
 				}
 				else{
+					dataRefs.gallery.removeChild(dataRefs.gallery.firstElementChild)
 					for (const file of dataRefs.files) {
 						let reader = new FileReader();
 						reader.readAsDataURL(file);
@@ -587,6 +638,7 @@
 							img.className = 'upload_img mt-2';
 							img.setAttribute('alt', file.name);
 							img.src = reader.result;
+							console.log('llego aquiii')
 							dataRefs.gallery.appendChild(img);
 						}
 					}

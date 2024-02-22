@@ -14,7 +14,6 @@ return new class extends Migration
     public function up()
     {
         Schema::table('payment_histories', function (Blueprint $table) {
-            $table->string('reference_payment')->after('is_approved');
             $table->dateTime('date_payment')->after('reference_payment');
         });
     }

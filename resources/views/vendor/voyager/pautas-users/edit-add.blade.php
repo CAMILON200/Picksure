@@ -126,11 +126,11 @@
 
 							<div class="icon voyager-upload upload_svg"></div>
 
-							<p class="small my-2">Arrastre y suelte la(s) imagen(es) de fondo dentro de la región punteada<br><i>ó</i></p>
+							<p class="small my-2"> Drag and drop the background image(s) into the dotted region<br><i>ó</i></p>
 
 							<input name="image_product" id="image_product" data-post-name="image_background"  class="position-absolute invisible" type="file" accept="image/jpeg, image/png, image/svg+xml" />
 
-							<label class="btn btn-primary mb-3" for="image_product">Seleccionar archivo(s)</label>
+							<label class="btn btn-primary mb-3" for="image_product">Select file</label>
 
 							<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
 
@@ -148,7 +148,7 @@
 
 							<input name="image_product_2" id="image_product_2" data-post-name="image_background"  class="position-absolute invisible" type="file" accept=".csv" />
 
-							<label class="btn btn-primary mb-3" for="image_product_2">Seleccionar archivo(s)</label>
+							<label class="btn btn-primary mb-3" for="image_product_2">Select file</label>
 
 							<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
 
@@ -163,7 +163,7 @@
 						
 						<div class="form-group itemCat">
 							<div class="col-md-12">
-								<label for="description">Selecciona la Categoría</label>
+								<label for="description">Select Categories</label>
 								<div class="categories-product" style="height:auto !important; margin-bottom:30px !important">
 									@foreach($categories as $category)
 										<div class="form-check">

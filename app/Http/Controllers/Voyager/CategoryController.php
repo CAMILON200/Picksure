@@ -350,6 +350,9 @@ class CategoryController extends \TCG\Voyager\Http\Controllers\VoyagerBaseContro
             $view = "voyager::$slug.edit-add";
         }
 
+        $categoriesARR = DB::select("SELECT categories.slug FROM categories ORDER BY categories.name ASC", []);
+        $categories =  json_encode($categoriesARR);
+
         $languages = Language::all();
         
         $texts = DB::table('texts_categories')
@@ -362,7 +365,7 @@ class CategoryController extends \TCG\Voyager\Http\Controllers\VoyagerBaseContro
                 
         $itemTexts = $texts;
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'languages', 'itemTexts'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'languages', 'itemTexts', 'categories'));
     }
 
     // POST BR(E)AD
@@ -495,12 +498,16 @@ class CategoryController extends \TCG\Voyager\Http\Controllers\VoyagerBaseContro
         $pruebas = [];
         $itemTexts = $this->itemTexts;
 
+        $categoriesARR = DB::select("SELECT categories.slug FROM categories ORDER BY categories.name ASC", []);
+        $categories =  json_encode($categoriesARR);
+        
         return Voyager::view($view, compact(
             'dataType',
             'dataTypeContent',
             'isModelTranslatable',
             'languages',
-            'itemTexts'
+            'itemTexts',
+            'categories'
         ));
     }
 

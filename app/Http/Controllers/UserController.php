@@ -563,10 +563,12 @@ class UserController extends Controller
 
   public function PaySuscription(Request $request) {
 
-    if (PaymentHistory::where('reference_pol', '=', $request->reference_pol)->exists()) {
-      // user found
-      $response["status"] = 200;
-      $response["message"] = 'Se actualizacion de suscripción anteriormente.';
+    $payment_histories = DB::table('payment_histories')->where('reference_payment', $request->reference_code)->where('is_approved', 1)->exists();
+    // user found
+    $response["status"] = 200;
+    $response["sssstatus"] = $payment_histories;
+    $response["message"] = 'Se actualizacion de suscripción anteriormente.';
+    if (!$payment_histories) {
       return response()->json($response, $response['status']);
     } else {
       if(isset($request->gift_voucher)){
@@ -574,25 +576,25 @@ class UserController extends Controller
         $giftVoucher->state = 0;
         $giftVoucher->update();
       }
-  
+
       if($request->is_approved == 2) {
-        $user = User::find($request->id);
-        $user->start_date_subscriber = $request->start_date_subscriber;
-        $user->end_date_subscriber = $request->end_date_subscriber;
-        $user->update();
+        DB::table('users')
+        ->where('id', $request->id)
+        ->update([
+          'start_date_subscriber' => $request->start_date_subscriber, 
+          'end_date_subscriber' => $request->end_date_subscriber, 
+        ]);
       }
   
-      $payment_history = new PaymentHistory;
-      $payment_history->user_id = $request->id;
-      $payment_history->payment_reference = $request->payment_reference;
-      $payment_history->amount = $request->amount;
-      $payment_history->is_approved = $request->is_approved;
-      $payment_history->reference_payment = $request->reference_code;
-      $payment_history->reference_pol = $request->reference_pol;
-      $payment_history->estado_tx = $request->estado_tx;
-      $payment_history->buyer_email = $request->buyer_email;
-      $payment_history->date_payment = date("Y-m-d H:i:s");
-      $payment_history->save();
+      DB::table('payment_histories')
+      ->where('reference_payment', $request->reference_code)
+      ->update([
+        'reference_pol' => $request->reference_pol, 
+        'estado_tx' => $request->estado_tx, 
+        'is_approved' => $request->is_approved,
+        'buyer_email' => $request->buyer_email, 
+        'date_payment' => date("Y-m-d H:i:s")
+      ]);
   
       $response["status"] = 200;
       $response["message"] = 'Se actualizo suscription correctamente.';
@@ -609,10 +611,11 @@ class UserController extends Controller
     $user->end_date_subscriber = $request->end_date_subscriber;
     $user->update();
     */
-
-    $paymentHistory = PaymentHistory::find('reference_payment', $request->reference_payment);
-    $paymentHistory->state = $request->transactionState == 4 ? 1 : 0;
-    $paymentHistory->update();
+    DB::table('payment_histories')
+    ->where('reference_payment', $request->reference_payment)
+    ->update([
+      'state' => $request->transactionState == 4 ? 1 : 0, 
+    ]);
 
     $response["status"] = 200;
     $response["message"] = 'Se actualizo correctamente';
@@ -692,6 +695,7 @@ class UserController extends Controller
           'payment_histories.amount', 
           'payment_histories.created_at', 
           'payment_histories.reference_payment', 
+          'payment_histories.is_approved', 
         )
         ->where('payment_histories.payment_reference', 'SUSCRIPTION')
         ->where('payment_histories.user_id', $user_id)
@@ -704,6 +708,7 @@ class UserController extends Controller
           'payment_histories.amount', 
           'payment_histories.created_at', 
           'payment_histories.reference_payment', 
+          'payment_histories.is_approved', 
         )
         ->where('payment_histories.payment_reference', 'PAUTA')
         ->where('payment_histories.user_id', $user_id)
@@ -827,6 +832,31 @@ class UserController extends Controller
 
       $response['valid'] = 'NOK';
       $response['data'] = 'Message could not be sent. '.$e;
+      return response()->json($response, $response['status']);
+    }
+
+  }
+
+  public function addPaySuscription(Request $request){
+    if (PaymentHistory::where('reference_payment', '=', $request->reference_code)->exists()) {
+      // user found
+      $response["status"] = 200;
+      $response["message"] = 'Ya se proceso solicitud.';
+      return response()->json($response, $response['status']);
+    } else {
+      $payment_history = new PaymentHistory;
+      $payment_history->user_id = $request->id;
+      $payment_history->payment_reference = $request->payment_reference;
+      $payment_history->amount = $request->amount;
+      $payment_history->estado_tx = 'PENDING';
+      $payment_history->is_approved = 1;
+      $payment_history->reference_payment = $request->reference_code;
+      $payment_history->data_payment = json_encode($request->data_payment);
+      $payment_history->save();
+      
+      $response["status"] = 200;
+      $response["message"] = 'Se registro suscription correctamente.';
+    
       return response()->json($response, $response['status']);
     }
 

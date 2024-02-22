@@ -82,6 +82,7 @@
 @section('content')
     <div class="page-content edit-add container-fluid">
         <div class="row">
+			<input type="hidden" id="categories" value="{{$categories}}">
             <div class="col-md-12">
 
                 <div class="panel panel-bordered">
@@ -114,11 +115,11 @@
 
 								<div class="icon voyager-upload upload_svg"></div>
 
-								<p class="small my-2">Arrastre y suelte la(s) imagen(es) de fondo dentro de la región punteada<br><i>ó</i></p>
+								<p class="small my-2"> Drag and drop the background image(s) into the dotted region<br><i>or</i></p>
 
 								<input name="image_category" id="image_category" data-post-name="image_background"  class="position-absolute invisible" type="file" accept="image/jpeg, image/png, image/svg+xml" />
 
-								<label class="btn btn-primary mb-3" for="image_category">Seleccionar archivo(s)</label>
+								<label class="btn btn-primary mb-3" for="image_category">Select file</label>
 
 								<div class="upload_gallery d-flex flex-wrap justify-content-center gap-3 mb-0"></div>
 								@if($edit)
@@ -173,87 +174,82 @@
                             @endforeach
 
                             <div class="form-group itemInfo">
-							<input type="hidden" name="setting_tab" class="setting_tab" />
-							<div class="mt-3">
-								<h3 class="panel-title">Agregar información de la Categoría</h3>
-								<div id="messsage-item" class="text-danger"></div>
-							</div>
-							<div class="col-md-4">
-								<label for="title">Nombre de Categoría</label>
-								<input type="text" class="form-control" name="title" id="title" placeholder="Escribe el nombre">
-							</div>
-							
-							<div class="col-md-4">
-								<label for="group">Idioma</label>
-								<select class="form-control" name="language" id="language">
-									<option  value=""> Seleccione </option>
-									@foreach($languages as $language)
-										<option 
-											value="{{$language->prefijo}}"
-										>
-											{{$language->name}}
-										</option>
-									@endforeach
-								</select>
-							</div>
-							
-							
-							<div class="col-md-4">
-								<div class="form-group">
-									<button type="button" class="btn btn-primary pull-right new-setting-btn" 
-										id="itemTextsImageProducts" onclick="addCategoryLanguage()">
-										<i class="voyager-plus"></i>Agregar texto
-									</button>
+								<input type="hidden" name="setting_tab" class="setting_tab" />
+								<div class="mt-3">
+									<h3 class="panel-title">Add category information</h3>
+									<div id="messsage-item" class="text-danger"></div>
 								</div>
-							</div>
-						</div>
-					</div>
-					<div class="panel-body itemTable">
-						<div class="row">
-							<div class="col-12">
-								<div class="card px2">
-									<div class="card-body">
-									<table class="table table-hover">
-										<thead>
-											<tr>
-												<th scope="col">Título</th>
-												<th scope="col">Idioma</th>
-												<th scope="col">Acciones</th>
-											</tr>
-										</thead>
-										<tbody id="columnItemText">
-											@foreach($itemTexts as $key => $value)
-												<tr id="item-{{ $value->language }}">												
-													<td>
-														{{ $value->title }}
-														<input type="hidden" name="title[]" value="{{ $value->title }}" />
-													</td>
-													<td>
-														{{ $value->language }}
-														<input type="hidden" name="language[]" value="{{ $value->language }}" />                            
-													</td>
-													
-													<td> 
-														<button type="button" class="btn btn-danger btn-sm" onclick="deleteItem('{{ $value->language_id }}')">-</button>
-													</td>
-												</tr>
-											@endforeach
-										</tbody>
-									</table>
+								<div class="col-md-4">
+									<label for="title">Name category</label>
+									<input type="text" class="form-control" name="title" id="title" placeholder="Escribe el nombre">
+								</div>
+							
+								<div class="col-md-4">
+									<label for="group">Idioma</label>
+									<select class="form-control" name="language" id="language">
+										<option  value=""> Seleccione </option>
+										@foreach($languages as $language)
+											<option 
+												value="{{$language->prefijo}}"
+											>
+												{{$language->name}}
+											</option>
+										@endforeach
+									</select>
+								</div>
+								
+							
+								<div class="col-md-4">
+									<div class="form-group">
+										<button type="button" class="btn btn-primary pull-right new-setting-btn" 
+											id="itemTextsImageProducts" onclick="addCategoryLanguage()">
+											<i class="voyager-plus"></i>Add text
+										</button>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-
-                        </div><!-- panel-body -->
-
-                       
-												
+						<div class="panel-body itemTable">
+							<div class="row">
+								<div class="col-12">
+									<div class="card px2">
+										<div class="card-body">
+										<table class="table table-hover">
+											<thead>
+												<tr>
+													<th scope="col">Title</th>
+													<th scope="col">Language</th>
+													<th scope="col">Actions</th>
+												</tr>
+											</thead>
+											<tbody id="columnItemText">
+												@foreach($itemTexts as $key => $value)
+													<tr id="item-{{ $value->language }}">												
+														<td>
+															{{ $value->title }}
+															<input type="hidden" name="title[]" value="{{ $value->title }}" />
+														</td>
+														<td>
+															{{ $value->language }}
+															<input type="hidden" name="language[]" value="{{ $value->language }}" />                            
+														</td>
+														
+														<td> 
+															<button type="button" class="btn btn-danger btn-sm" onclick="deleteItem('{{ $value->language_id }}')">-</button>
+														</td>
+													</tr>
+												@endforeach
+											</tbody>
+										</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>	
 
                         <div class="panel-footer">
                             @section('submit-buttons')
-                                <button type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
+                                <button id="guardar" type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
                             @stop
                             @yield('submit-buttons')
                         </div>
@@ -294,8 +290,35 @@
 
 @section('javascript')
     <script>
+		var categ = JSON.parse($("#categories").val())
         var params = {};
         var $file;
+		
+		$('input[name=name]').change(verifyValue);
+		$('input[name=slug]').change(updateValue);
+
+		function verifyValue(e) {
+			let slug = $("input[name=slug]").val()
+			
+			let verifyKey = categ.findIndex(x => x.slug == slug)
+			
+			if(verifyKey != -1){
+				alert('Este slug ya existe.')
+				$("#guardar").prop('disabled', true)
+			}
+		}
+
+		function updateValue(e){
+			let slug = $("input[name=slug]").val()
+			let verifyKey = categ.findIndex(x => x.slug == slug)
+			
+			if(verifyKey != -1){
+				alert('Este slug ya existe.')
+				$("#guardar").prop('disabled', true)
+			}else{
+				$("#guardar").prop('disabled', false)
+			}
+		}
 
         function deleteHandler(tag, isMulti) {
           return function() {
@@ -316,6 +339,7 @@
         }
 
         $('document').ready(function () {
+			
             $('.toggleswitch').bootstrapToggle();
 
             //Init datepicker for date fields if data-datepicker attribute defined

@@ -60,6 +60,18 @@ class ParametersSeeder extends Seeder
                 'name_parameter'         => 'suscription_twelve_month',
                 'value_parameter'        => '480000',
             ]);
+            Parameters::create([
+                'name_parameter'         => 'api_login',
+                'value_parameter'        => '',
+            ]);
+            Parameters::create([
+                'name_parameter'         => 'api_key',
+                'value_parameter'        => '',
+            ]);
+            Parameters::create([
+                'name_parameter'         => 'merchant_id',
+                'value_parameter'        => '',
+            ]);
         }
     }
 }

@@ -182,14 +182,15 @@ class PautasUsersController extends Controller
       DB::commit();
     }
 
-    /* $payment_history = new PaymentHistory;
+    $payment_history = new PaymentHistory;
     $payment_history->user_id = $request->user_id;
     $payment_history->payment_reference = 'PAUTA';
+    $payment_history->estado_tx = 'PENDING';
     $payment_history->amount = $request->valor;
     $payment_history->is_approved = 1;
-    $payment_history->reference_payment = $request->reference_payment;
+    $payment_history->reference_payment = $request->reference_code;
     $payment_history->date_payment = date("Y-m-d H:i:s");
-    $payment_history->save(); */
+    $payment_history->save();
 
     $response["status"] = 200;
     $response["id"] = $result_id;

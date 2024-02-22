@@ -21,6 +21,8 @@ use App\Models\Imageproduct;
 use App\Models\TextsImageproducts;
 use App\Models\ImageproductsCategory;
 use App\Models\ImagesPautas;
+use App\Models\UserLikeImageproduct;
+
 use TCG\Voyager\Models\Category;
 use Livewire\Component;
 
@@ -402,58 +404,78 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 	// POST BR(E)AD
 	public function update(Request $request, $id)
 	{
-			$slug = $this->getSlug($request);
-
-			$dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
-
-			// Compatibility with Model binding.
-			$id = $id instanceof \Illuminate\Database\Eloquent\Model ? $id->{$id->getKeyName()} : $id;
-
-			$model = app($dataType->model_name);
-			$query = $model->query();
-			if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
-					$query = $query->{$dataType->scope}();
-			}
-			if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
-					$query = $query->withTrashed();
-			}
-
-			$data = $query->findOrFail($id);
-
-			// Check permission
-			$this->authorize('edit', $data);
-
-			// Validate fields with ajax
-			$val = $this->validateBread($request->all(), $dataType->editRows, $dataType->name, $id)->validate();
-
-			// Get fields with images to remove before updating and make a copy of $data
-			$to_remove = $dataType->editRows->where('type', 'image')
-					->filter(function ($item, $key) use ($request) {
-							return $request->hasFile($item->field);
-					});
-			$original_data = clone($data);
-
-			//$this->insertUpdateData($request, $slug, $dataType->editRows, $data);
-
-			// Delete Images
-			$this->deleteBreadImages($original_data, $to_remove);
-			
-			$input = $request->all();
-			$items = $this->addTexts($id, $input);
-			$this->addCategoriesImageproducts($id, $input);
-			
-			event(new BreadDataUpdated($dataType, $data));
-
-			if (auth()->user()->can('browse', app($dataType->model_name))) {
-				$redirect = redirect()->route("voyager.{$dataType->slug}.index");
-			} else {
-				$redirect = redirect()->back();
-			}
-
-			return $redirect->with([
-					'message'    => __('voyager::generic.successfully_updated')." {$dataType->getTranslatedAttribute('display_name_singular')}",
-					'alert-type' => 'success',
+		if ($request->hasFile('image_product')) {
+				
+			$request->validate([
+				'image_product' => 'required|image|max:'.$this->max_weight_image, // Máximo 20 MB (20480 kilobytes)
 			]);
+
+			$file = $request->file('image_product');
+
+			$path = $file->store('imageproducts', 'public');
+
+			// Obtiene la URL completa de la imagen cargada
+			//$request['img_url'] = asset('storage/posts/' . $path);
+			$request['img_url'] = $path;
+		}else{
+			$image = DB::table('imageproducts')
+			->where('imageproducts.id','=', $id)
+			->first();
+			$request['img_url'] = $image->img_url;
+		}
+		$slug = $this->getSlug($request);
+
+		$dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+
+		// Compatibility with Model binding.
+		$id = $id instanceof \Illuminate\Database\Eloquent\Model ? $id->{$id->getKeyName()} : $id;
+
+		$model = app($dataType->model_name);
+		$query = $model->query();
+		if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+				$query = $query->{$dataType->scope}();
+		}
+		if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
+				$query = $query->withTrashed();
+		}
+
+		$data = $query->findOrFail($id);
+
+		// Check permission
+		$this->authorize('edit', $data);
+
+		// Validate fields with ajax
+		$val = $this->validateBread($request->all(), $dataType->editRows, $dataType->name, $id)->validate();
+		//$data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
+		
+		// Get fields with images to remove before updating and make a copy of $data
+		$to_remove = $dataType->editRows->where('type', 'image')
+				->filter(function ($item, $key) use ($request) {
+						return $request->hasFile($item->field);
+				});
+		$original_data = clone($data);
+
+		$this->insertUpdateData($request, $slug, $dataType->editRows, $data);
+
+		// Delete Images
+		$this->deleteBreadImages($original_data, $to_remove);
+		
+		$input = $request->all();
+		$items = $this->addTexts($id, $input);
+		$this->addCategoriesImageproducts($id, $input);
+		
+		event(new BreadDataUpdated($dataType, $data));
+
+		if (auth()->user()->can('browse', app($dataType->model_name))) {
+			$redirect = redirect()->route("voyager.{$dataType->slug}.index");
+		} else {
+			$redirect = redirect()->back();
+		}
+
+		return $redirect->with([
+				'message'    => __('voyager::generic.successfully_updated')." {$dataType->getTranslatedAttribute('display_name_singular')}",
+				'alert-type' => 'success',
+		]);
 	}
 
 	//***************************************
@@ -762,6 +784,7 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 					if($imgPauta){
 						ImagesPautas::where('imageproducts_id', $id)->delete();
 					}
+					UserLikeImageproduct::where('imageproduct_id', $id)->delete();
 					TextsImageproducts::where('imageproduct_id', $id)->delete();
 					ImageproductsCategory::where('imageproduct_id', $id)->delete();
 

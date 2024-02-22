@@ -110,9 +110,28 @@
                
                 <div style="display: none;">
                     <!-- <form method="post" action="https://checkout.payulatam.com/ppp-web-gateway-payu/"> -->
-                    <form method="post" action="https://checkout.payulatam.com/ppp-web-gateway-payu/">
+                    <!-- <form method="post" action="https://checkout.payulatam.com/ppp-web-gateway-payu/">
                         <input  id="merchantId"  name="merchantId"              type="hidden"  value="999442"   >
                         <input  id="accountId"  name="accountId"                type="hidden"  value="1008095" >
+                        <input  id="description"  name="description"            type="hidden"  value=""  >
+                        <input  id="referenceCode"  name="referenceCode"        type="hidden"  value="" >
+                        <input  id="amount"  name="amount"                      type="hidden"  value=""   >
+                        <input  id="tax"  name="tax"                            type="hidden"  value="0"  >
+                        <input  id="taxReturnBase"  name="taxReturnBase"        type="hidden"  value="0" >
+                        <input  id="currency"  name="currency"                  type="hidden"  value="USD" >
+                        <input  id="signature"  name="signature"                type="hidden"  value=""  >
+                        <input  id="test"  name="test"                          type="hidden"  value="0" >
+                        <input  id="buyerEmail"  name="buyerEmail"              type="hidden"  value="" >
+                        <input  id="buyerFullName"  name="buyerFullName"        type="hidden"  value="" >
+                        <input  id="extra1"  name="extra1"                      type="hidden"  value="" >
+                        <input  id="extra2"  name="extra2"                      type="hidden"  value="" >
+                        <input  id="responseUrl"  name="responseUrl"            type="hidden"  value="https://picksure.tech/responsepay/response.php" >
+                        <input  id="confirmationUrl"  name="confirmationUrl"    type="hidden"  value="https://picksure.tech/confirmationpay/response.php" >
+                        <input  id="submit"  name="Submit"                      type="submit"  value="Pagar" >
+                    </form> -->
+                    <form method="post" action="https://checkout.payulatam.com/ppp-web-gateway-payu/">
+                        <input  id="merchantId"  name="merchantId"              type="hidden"  value="999416"   >
+                        <input  id="accountId"  name="accountId"                type="hidden"  value="1008069" >
                         <input  id="description"  name="description"            type="hidden"  value=""  >
                         <input  id="referenceCode"  name="referenceCode"        type="hidden"  value="" >
                         <input  id="amount"  name="amount"                      type="hidden"  value=""   >
@@ -135,7 +154,7 @@
                     <div class="text-center text-sm text-gray-500 sm:text-left"></div>
 
                     <div class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0">
-                        Developed by ZIEL - v1.1.7
+                        Developed by ZIEL 
                     </div>
                 </div>
 
@@ -268,7 +287,19 @@
 
         async function saveProcessPay(data_body) {
             if(data_body.type_pay != 'SUSCRIPTION') {
+                console.log('data_body = ', data_body)
                 const res_pay_pauta = await fetch(`/api/v1/pautasusers/create`, {
+                    method: 'POST', //Request Type
+                    //body: formData, //post body
+                    body: JSON.stringify(data_body),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                await res_pay_pauta.json();
+            }else{
+                data_body.data_payment = JSON.stringify(data_body)
+                const res_pay_suscription = await fetch(`/api/v1/user/registerPaySuscriiption`, {
                     method: 'POST', //Request Type
                     //body: formData, //post body
                     body: JSON.stringify(data_body),
@@ -284,9 +315,10 @@
             let key = atob($('#hash').val())
 
             const dataPay = decryptText(key)
-            const apiKey = 'aeajec3aw51153Z26HIYIe8DnZ'
+            const apiKey = 'tSaLgy6dpvPFo18BZEnX338S2N'//'aeajec3aw51153Z26HIYIe8DnZ'
             const merchantId = $('#merchantId').val()
             const accountId = $('#accountId').val()
+            
             const btn = document.getElementById('submit')
             
             const amount = dataPay.type_pay == 'SUSCRIPTION' ? dataPay.amount : dataPay.valor
@@ -295,9 +327,7 @@
             const buyer_email = dataPay.buyer_email
             const buyer_name = dataPay.buyer_name
             const extra1 = dataPay.type_pay == 'SUSCRIPTION' ? dataPay.id+'+'+dataPay.start_date_subscriber+'+'+dataPay.end_date_subscriber : dataPay.id
-            const signature = md5(`${apiKey}~${merchantId}~${reference_code}~${amount}~COP`);
-
-            saveProcessPay(dataPay)
+            const signature = md5(`${apiKey}~${merchantId}~${reference_code}~${amount}~USD`);
 
             $('#amount').val(amount)
             $('#description').val(`PICKSURE - ${payment_description}`)
@@ -307,8 +337,9 @@
             $('#signature').val(signature)
             $('#extra1').val(extra1)
             $('#extra2').val(dataPay.type_pay)
-
-            btn.click();
+            
+            saveProcessPay(dataPay)
+            //btn.click();
         });
     </script>
 </html>
