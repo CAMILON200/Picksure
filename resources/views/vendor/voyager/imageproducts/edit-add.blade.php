@@ -629,7 +629,9 @@
 					dataRefs.gallery.appendChild(text);
 				}
 				else{
-					dataRefs.gallery.removeChild(dataRefs.gallery.firstElementChild)
+					if(dataRefs.gallery.firstElementChild){
+						dataRefs.gallery.removeChild(dataRefs.gallery.firstElementChild)
+					}
 					for (const file of dataRefs.files) {
 						let reader = new FileReader();
 						reader.readAsDataURL(file);
