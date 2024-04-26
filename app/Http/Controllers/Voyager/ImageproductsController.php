@@ -532,7 +532,7 @@ class ImageproductsController extends \TCG\Voyager\Http\Controllers\VoyagerBaseC
 			$url_bulck_load = $parameterUrl->value_parameter;
 
 			$languages = Language::all();
-			$categories = Category::all();
+			$categories = Category::orderBy('name')->get();
 			$itemTexts = $this->itemTexts;
 
 			$size_img = $this->max_weight_image;

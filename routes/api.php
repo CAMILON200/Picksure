@@ -17,6 +17,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\TownController;
 use App\Http\Controllers\CategoriesController as Category;
 use App\Http\Controllers\QualifyController;
+use App\Http\Controllers\ImgproductsController;
 
 
 
@@ -57,7 +58,7 @@ Route::get('/user/show_users/{user_id}/{lang}', [UserController::class, 'ShowInf
 Route::post('/user/verify_email', [UserController::class, 'VerifyEmail']);
 Route::post('/user/reset_password', [UserController::class, 'ResetPassword']);
 Route::post('/user/change_password', [UserController::class, 'ChangePassword']);
-Route::post('/user/registerPaySuscriiption', [UserController::class, 'addPaySuscription']);
+Route::post('/user/register_pay_suscription', [UserController::class, 'AddPaySuscription']);
 
 //GiftVoucher
 Route::get('/giftvoucher/{code}/{type}', [GiftVoucherContoller::class, 'read']);
@@ -86,6 +87,7 @@ Route::get('/locations', [LocationsController::class, 'index']);
 
 //Images
 Route::post('/imageproducts_carga_masiva', [ImageproductsController::class, 'uploadFile']);
+//Route::post('/imageproducts_carga_masiva', [ImgproductsController::class, '']);
 Route::get('/imageproducts/create_folder/{id}', [ImageproductsController::class, 'createDirectory']);
 Route::post('/imageproducts/add', [ImageproductsController::class, 'addImageProducts']);
 Route::post('/imageproducts_update', [ImageproductsController::class, 'updateImageProducts']);

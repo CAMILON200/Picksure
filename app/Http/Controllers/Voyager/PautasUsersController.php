@@ -275,6 +275,7 @@ class PautasUsersController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 			->select('imageproducts.img_url','imageproducts.id')
 			->where('images_pautas.pautasuser_id', '=', $id)
 			->get();
+
 			// If a column has a relationship associated with it, we do not want to show that field
 			$this->removeRelationshipField($dataType, 'read');
 

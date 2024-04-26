@@ -837,13 +837,12 @@ class UserController extends Controller
 
   }
 
-  public function addPaySuscription(Request $request){
-    if (PaymentHistory::where('reference_payment', '=', $request->reference_code)->exists()) {
-      // user found
-      $response["status"] = 200;
-      $response["message"] = 'Ya se proceso solicitud.';
-      return response()->json($response, $response['status']);
-    } else {
+  public function AddPaySuscription(Request $request){
+    /** */
+    $status = 200;
+    $message = '';
+    $paymentHistory = PaymentHistory::where('reference_payment', '=', $request->reference_code)->first();
+    if($paymentHistory === null){
       $payment_history = new PaymentHistory;
       $payment_history->user_id = $request->id;
       $payment_history->payment_reference = $request->payment_reference;
@@ -853,13 +852,18 @@ class UserController extends Controller
       $payment_history->reference_payment = $request->reference_code;
       $payment_history->data_payment = json_encode($request->data_payment);
       $payment_history->save();
-      
-      $response["status"] = 200;
-      $response["message"] = 'Se registro suscription correctamente.';
-    
-      return response()->json($response, $response['status']);
+
+      $status = 200;
+      $message = 'Se registro suscription correctamente.';
+    }else{
+      $status = 200;
+      $message = 'Ya se proceso solicitud.';
     }
 
+    $response["status"] = $status;
+    $response["message"] = $message;
+  
+    return response()->json($response, $response['status']);
   }
 
   public function ChangePassword(Request $request) {

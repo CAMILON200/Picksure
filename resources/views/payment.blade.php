@@ -137,7 +137,7 @@
                         <input  id="amount"  name="amount"                      type="hidden"  value=""   >
                         <input  id="tax"  name="tax"                            type="hidden"  value="0"  >
                         <input  id="taxReturnBase"  name="taxReturnBase"        type="hidden"  value="0" >
-                        <input  id="currency"  name="currency"                  type="hidden"  value="COP" >
+                        <input  id="currency"  name="currency"                  type="hidden"  value="USD" >
                         <input  id="signature"  name="signature"                type="hidden"  value=""  >
                         <input  id="test"  name="test"                          type="hidden"  value="0" >
                         <input  id="buyerEmail"  name="buyerEmail"              type="hidden"  value="" >
@@ -183,30 +183,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/js-md5@0.8.3/src/md5.min.js"></script>
     <script>
-        (function(){
-            var appContainer = document.querySelector('.app-container'),
-                sidebar = appContainer.querySelector('.side-menu'),
-                navbar = appContainer.querySelector('nav.navbar.navbar-top'),
-                loader = document.getElementById('voyager-loader'),
-                hamburgerMenu = document.querySelector('.hamburger'),
-                sidebarTransition = sidebar.style.transition,
-                navbarTransition = navbar.style.transition,
-                containerTransition = appContainer.style.transition;
-
-            sidebar.style.WebkitTransition = sidebar.style.MozTransition = sidebar.style.transition =
-            appContainer.style.WebkitTransition = appContainer.style.MozTransition = appContainer.style.transition =
-            navbar.style.WebkitTransition = navbar.style.MozTransition = navbar.style.transition = 'none';
-
-            if (window.innerWidth > 768 && window.localStorage && window.localStorage['voyager.stickySidebar'] == 'true') {
-                appContainer.className += ' expanded no-animation';
-                loader.style.left = (sidebar.clientWidth/2)+'px';
-                hamburgerMenu.className += ' is-active no-animation';
-            }
-
-            navbar.style.WebkitTransition = navbar.style.MozTransition = navbar.style.transition = navbarTransition;
-            sidebar.style.WebkitTransition = sidebar.style.MozTransition = sidebar.style.transition = sidebarTransition;
-            appContainer.style.WebkitTransition = appContainer.style.MozTransition = appContainer.style.transition = containerTransition;
-        })();
+        
     </script>
     <script>
         function decryptText(encryptedText) {
@@ -299,7 +276,7 @@
                 await res_pay_pauta.json();
             }else{
                 data_body.data_payment = JSON.stringify(data_body)
-                const res_pay_suscription = await fetch(`/api/v1/user/registerPaySuscriiption`, {
+                const res_pay_suscription = await fetch(`/api/v1/user/register_pay_suscription`, {
                     method: 'POST', //Request Type
                     //body: formData, //post body
                     body: JSON.stringify(data_body),
@@ -339,7 +316,7 @@
             $('#extra2').val(dataPay.type_pay)
             
             saveProcessPay(dataPay)
-            //btn.click();
+            btn.click();
         });
     </script>
 </html>

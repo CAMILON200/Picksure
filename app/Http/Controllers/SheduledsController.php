@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -15,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
 
+date_default_timezone_set('America/Bogota');
 class SheduledsController extends Controller
 {
   private function updateStatusPautasPayU(){
@@ -337,7 +337,7 @@ class SheduledsController extends Controller
       return response()->json($response, $response['status']);
     } catch (\Exception $e) {
       $response['status'] = 400;
-      $response['data'] = 'Hubo un error a consultar información '. $date; 
+      $response['data'] = 'Hubo un error a consultar información... '. $date; 
       return response()->json($response, $response['status']);
     }
   }

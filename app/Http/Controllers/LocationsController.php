@@ -47,7 +47,7 @@ class LocationsController extends Controller
      */
   public function index(Request $request)
   {  	
-    $locations = DB::select("SELECT l.code_iso as value,concat(l.code_iso,'-',l.name) as label from locations l", []);
+    $locations = DB::select("SELECT l.code_iso as value,concat(l.code_iso,'-',l.name) as label from locations l ORDER BY l.created_at ASC", []);
     
     return response()->json(['success' => true, 'data' => $locations]);
   } 

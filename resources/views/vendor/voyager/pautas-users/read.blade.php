@@ -54,11 +54,13 @@
                             </div>
                        
                             <div class="panel-body" style="padding-top:0;">
-                                @if($row->type == "image")
+                                @if($row->type == "image")                                
+                                    @if(count($images_pautas) > 0)
                                     <a href="/admin/imageproducts/{{$images_pautas[0]->id}}">
                                         <img class="img-responsive"
                                             src="{{ filter_var($dataTypeContent->{$row->field}, FILTER_VALIDATE_URL) ? $dataTypeContent->{$row->field} : Voyager::image($dataTypeContent->{$row->field}) }}">
                                     </a>
+                                    @endif
                                 @elseif($row->type == 'relationship')
                                     @include('voyager::formfields.relationship', ['view' => 'read', 'options' => $row->details])
                                 @elseif($row->type == 'number')
