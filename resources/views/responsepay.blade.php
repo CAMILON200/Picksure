@@ -228,12 +228,7 @@
         integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
         crossorigin="anonymous"></script>
     <script>
-        console.log('llegooossssss')
         
-        function filter(id) {
-            console.log('id ', id)
-        }
-
         async function paySuscription(data_body) {
             const res_pay_suscription = await fetch(`/api/v1/user/pay_suscription`, {
                     method: 'POST', //Request Type
@@ -259,7 +254,6 @@
         }
        
         $( document ).ready(function() {
-            console.log('llegooo = ', $("#extra2").val())
             let type_pay = $("#extra2").val()
             let transactionState = $("#transactionState").val()
             let referenceCode = $("#referenceCode").val()
@@ -268,10 +262,8 @@
             let buyerEmail = $("#buyerEmail").val()
             let amount = $("#amount").val()
             let extra1 = $("#extra1").val()
-            console.log('extra1 = ', extra1)
             if(type_pay == 'SUSCRIPTION'){
                 let splExtra1 = extra1.split(' ');
-                console.log('SUSCRIPTION = ', splExtra1)
 
                 let data_body = {
                     id: splExtra1[0],
@@ -285,7 +277,6 @@
                     estado_tx: estadoTx,
                     buyer_email: buyerEmail
                 }
-                console.log('data_body === ', data_body)
                 paySuscription(data_body)
             }else{
                 //PAGO DE PAUTA

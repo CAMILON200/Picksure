@@ -322,7 +322,6 @@
 
 		function showSelected(e) {
 			if (this.checked) {
-				console.log("dmdndn = ", this.value)
 				if(this.value == 1){
 					$("#img-content").show()
 					$("#url-content").hide()
@@ -485,7 +484,6 @@
 // https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
 // https://codepen.io/joezimjs/pen/yPWQbd?editors=1000
 (function () {
-    console.log("llegooooo")
   'use strict';
   
   // Four objects of interest: drop zones, input elements, gallery elements, and the files.
@@ -562,7 +560,6 @@
 	const isCSVFile = file =>['text/csv'].includes(file.type);
 
   function previewFiles(dataRefs) {
-	console.log(dataRefs.files[0].type);
 	
     if (!dataRefs.gallery) return;
 
@@ -610,7 +607,6 @@
     })
     .then(response => response.json())
     .then(data => {
-      console.log('posted: ', data);
       if (data.success === true) {
         previewFiles(dataRefs);
       } else {
@@ -637,7 +633,7 @@
 		}
 		else
 		{
-        console.log('Not an image, ', item.type);
+        	console.log('Not an image, ', item.type);
 		}
        
       }

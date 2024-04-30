@@ -245,7 +245,6 @@
                 function addCategoryLanguage(){
 			let title = $('#title').val()
 			let language = $('#language option:selected')
-            console.log(language.val())
 			$('#messsage-item').html('')
 			if(title == ''){
 				$('#messsage-item').html('Los campos son obligatorios')

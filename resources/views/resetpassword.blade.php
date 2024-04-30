@@ -181,7 +181,6 @@
             const decrypted = CryptoJS.AES.decrypt(encryptedText, 'secretKey');
             const originalText = decrypted.toString(CryptoJS.enc.Utf8);
             const parseData = JSON.parse(originalText)
-            console.log('desencriptado === ',parseData)
             return parseData;
         }
         async function saveProcessPay(data_body) {
@@ -196,7 +195,7 @@
             await res_pay_suscription.json();
         }
         function filter(id) {
-            console.log('id ', id)
+            return true
         }
 
         const validarLowerUpper = (texto, letters) => {
@@ -253,8 +252,6 @@
        
         $( document ).ready(function() {
             console.log( "ready!" );
-            
-            console.log('dataPay = ', dataPay)
             let data_body = {
                 referenceCode: $("#key").val()
             }

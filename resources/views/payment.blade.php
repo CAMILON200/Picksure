@@ -109,26 +109,6 @@
                 </div>
                
                 <div style="display: none;">
-                    <!-- <form method="post" action="https://checkout.payulatam.com/ppp-web-gateway-payu/"> -->
-                    <!-- <form method="post" action="https://checkout.payulatam.com/ppp-web-gateway-payu/">
-                        <input  id="merchantId"  name="merchantId"              type="hidden"  value="999442"   >
-                        <input  id="accountId"  name="accountId"                type="hidden"  value="1008095" >
-                        <input  id="description"  name="description"            type="hidden"  value=""  >
-                        <input  id="referenceCode"  name="referenceCode"        type="hidden"  value="" >
-                        <input  id="amount"  name="amount"                      type="hidden"  value=""   >
-                        <input  id="tax"  name="tax"                            type="hidden"  value="0"  >
-                        <input  id="taxReturnBase"  name="taxReturnBase"        type="hidden"  value="0" >
-                        <input  id="currency"  name="currency"                  type="hidden"  value="USD" >
-                        <input  id="signature"  name="signature"                type="hidden"  value=""  >
-                        <input  id="test"  name="test"                          type="hidden"  value="0" >
-                        <input  id="buyerEmail"  name="buyerEmail"              type="hidden"  value="" >
-                        <input  id="buyerFullName"  name="buyerFullName"        type="hidden"  value="" >
-                        <input  id="extra1"  name="extra1"                      type="hidden"  value="" >
-                        <input  id="extra2"  name="extra2"                      type="hidden"  value="" >
-                        <input  id="responseUrl"  name="responseUrl"            type="hidden"  value="https://picksure.tech/responsepay/response.php" >
-                        <input  id="confirmationUrl"  name="confirmationUrl"    type="hidden"  value="https://picksure.tech/confirmationpay/response.php" >
-                        <input  id="submit"  name="Submit"                      type="submit"  value="Pagar" >
-                    </form> -->
                     <form method="post" action="https://checkout.payulatam.com/ppp-web-gateway-payu/">
                         <input  id="merchantId"  name="merchantId"              type="hidden"  value="999416"   >
                         <input  id="accountId"  name="accountId"                type="hidden"  value="1008069" >
@@ -190,11 +170,9 @@
             const decrypted = CryptoJS.AES.decrypt(encryptedText, 'secretKey');
             const originalText = decrypted.toString(CryptoJS.enc.Utf8);
             const parseData = JSON.parse(originalText)
-            console.log('desencriptado === ',parseData)
             return parseData;
         }
         function decrypt_data(string) {
-            console.log('paso... = ', string)
             var newString = '',
             char, codeStr, firstCharCode, lastCharCode;
             string = string.match(/.{1,4}/g).reduce((acc,char)=>acc+String.fromCharCode(parseInt(char, 16)),"");
@@ -212,15 +190,13 @@
                     newString += string.charAt(i);
                 }
             }
-            console.log('desencriptado === ',newString)
             let result = JSON.parse(newString)
             return result;
         }
         function filter(id) {
-            console.log('id ', id)
+            return true
         }
         async function getCategories() {
-            console.log("llego cat")
             const response = await fetch("/api/v1/categories/ES");
             const categories = await response.json();
             let html_categories = ''
@@ -231,11 +207,9 @@
                 });
             }
             $("#content_categories").html(html_categories)
-            console.log(categories);
         }
 
         async function getImages() {
-            console.log("llego")
             const response = await fetch("/api/v1/imageproducts/ES/100/0");
             const images = await response.json();
             let html_imgs = ''
@@ -246,10 +220,8 @@
                 });
             }
             $("#content_images").html(html_imgs)
-            console.log(images);
 
             const imagenes_sel = document.querySelectorAll('.img');
-            console.log("leggo")
             const imgModal = document.querySelector('#imgModal')
 
             
@@ -264,7 +236,6 @@
 
         async function saveProcessPay(data_body) {
             if(data_body.type_pay != 'SUSCRIPTION') {
-                console.log('data_body = ', data_body)
                 const res_pay_pauta = await fetch(`/api/v1/pautasusers/create`, {
                     method: 'POST', //Request Type
                     //body: formData, //post body
@@ -292,7 +263,7 @@
             let key = atob($('#hash').val())
 
             const dataPay = decryptText(key)
-            const apiKey = 'tSaLgy6dpvPFo18BZEnX338S2N'//'aeajec3aw51153Z26HIYIe8DnZ'
+            const apiKey = 'tSaLgy6dpvPFo18BZEnX338S2N'
             const merchantId = $('#merchantId').val()
             const accountId = $('#accountId').val()
             

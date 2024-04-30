@@ -421,7 +421,6 @@
         function addCategoryLanguage(){
 			let title = $('#title').val()
 			let language = $('#language option:selected')
-            console.log(language.val())
 			$('#messsage-item').html('')
 			if(title == ''){
 				$('#messsage-item').html('Los campos son obligatorios')
@@ -461,7 +460,6 @@
 		// https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
 		// https://codepen.io/joezimjs/pen/yPWQbd?editors=1000
 		(function () {
-			console.log("llegooooo")
 			'use strict';
 		
 			// Four objects of interest: drop zones, input elements, gallery elements, and the files.
@@ -584,7 +582,6 @@
 				})
 				.then(response => response.json())
 				.then(data => {
-				console.log('posted: ', data);
 				if (data.success === true) {
 					previewFiles(dataRefs);
 				} else {

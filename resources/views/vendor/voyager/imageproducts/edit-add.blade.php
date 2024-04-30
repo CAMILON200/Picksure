@@ -348,9 +348,7 @@
 		}
 
 		function showSelected(e) {
-			console.log('llego')
 			if (this.checked) {
-				console.log("dmdndn = ", this.value)
 				if(this.value == 1){
 					selectFrm = 1
 					// Obtener el botón de envío
@@ -541,7 +539,6 @@
 		// https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
 		// https://codepen.io/joezimjs/pen/yPWQbd?editors=1000
 		(function () {
-			console.log("llegooooo")
 			'use strict';
 		
 			// Four objects of interest: drop zones, input elements, gallery elements, and the files.
@@ -640,7 +637,6 @@
 							img.className = 'upload_img mt-2';
 							img.setAttribute('alt', file.name);
 							img.src = reader.result;
-							console.log('llego aquiii')
 							dataRefs.gallery.appendChild(img);
 						}
 					}
@@ -667,7 +663,6 @@
 				})
 				.then(response => response.json())
 				.then(data => {
-				console.log('posted: ', data);
 				if (data.success === true) {
 					previewFiles(dataRefs);
 				} else {

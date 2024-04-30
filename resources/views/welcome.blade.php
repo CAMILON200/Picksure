@@ -158,7 +158,7 @@
         let pagination = 0
         let maxImagesPerPagination = 30
         function filter(id) {
-            console.log('id ', id)
+            return true
         }
         function changeOffset () {
             let o = offset + maxImagesPerPagination
@@ -175,7 +175,6 @@
                 });
             }
             $("#content_categories").html(html_categories)
-            console.log(categories);
         }
 
         async function getImages(newOffset) {
@@ -214,14 +213,11 @@
         $(window).scroll(function() {
             // Verificar si se ha llegado al final de la página
             if($(window).scrollTop() + $(window).height() == $(document).height()) {
-    
-                console.log("► End of scroll");
                 changeOffset()
             }
         });
         
         $( document ).ready(function() {
-            console.log( "ready!" );
             getCategories()
             startImgs()
         });
